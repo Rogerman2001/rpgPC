@@ -10,3 +10,5 @@ await build({entryPoints:['js/bootstrap.js','js/advice-worker.js'],outdir:'dist/
 await copyFile('styles.css','dist/styles.css');await copyFile('account.css','dist/account.css');
 await writeFile('dist/index.html',await readFile('index.html','utf8'));
 console.log(url&&key?'Build ready; verify SQL/OAuth setup before deployment.':'Build ready with closed login gate: Supabase configuration missing.');
+
+await copyFile('responsive.css','dist/responsive.css');

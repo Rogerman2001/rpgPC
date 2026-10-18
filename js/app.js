@@ -179,4 +179,3 @@ document.addEventListener('account-ended',()=>{readOnly=true;clearTimeout(timer)
 document.addEventListener('cloud-conflict',()=>{readOnly=true;clearTimeout(timer);render();});
 window.addEventListener('pagehide',()=>{if(!blocked())account.sync.flush();});
 render();if(!blocked()){persist();if(state.afk.active)timer=setTimeout(()=>begin(true),C.afk.delay);}
-const settingsLink=document.createElement('button');settingsLink.className='text-btn';settingsLink.textContent='Partida y copias ↗';settingsLink.addEventListener('click',()=>tab('settings'));document.querySelector('footer').append(settingsLink);
