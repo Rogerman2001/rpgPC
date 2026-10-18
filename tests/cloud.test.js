@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {freshState} from '../js/save.js';
 import {Huge} from '../js/numbers.js';
 import {encodeCloud,decodeCloud,totalPower,validateName} from '../js/cloud-data.js';
-import {CloudSync,readBackup,backupKey} from '../js/cloud-sync.js';
+import {CloudSync,readBackup,backupKey,startupChoice} from '../js/cloud-sync.js';
 import {playerStatistics,bossStatistics} from '../js/combat-statistics.js';
 import {getBoss} from '../js/bosses.js';
 import {startCombat} from '../js/combat.js';
@@ -33,7 +33,7 @@ test('power uses existing style and permanent relics; names reject reserved/case
 });
 test('serialized saves retain edits made while a write is pending and string revisions',async()=>{
  let release;const calls=[];const c=setup(async(data,revision,uid)=>{calls.push({data,revision,uid});if(calls.length===1)await new Promise(r=>release=r);return {revision:(BigInt(revision)+1n).toString()};});
- try{const s=freshState();c.queue(s);const pending=c.flush();s.levels.attack++;c.queue(s);release();assert.equal(await pending,true);assert.equal(calls.length,2);assert.equal(calls[1].revision,'9007199254740994');assert.equal(c.revision,'9007199254740995');assert.equal(readBackup(c.storage,'a').pending,false);}finally{c.stop();}
+ try{const s=freshState();c.queue(s);const pending=c.flush();await Promise.resolve();s.levels.attack++;c.queue(s);release();assert.equal(await pending,true);assert.equal(calls.length,2);assert.equal(calls[1].revision,'9007199254740994');assert.equal(c.revision,'9007199254740995');assert.equal(readBackup(c.storage,'a').pending,false);}finally{c.stop();}
 });
 test('network failure retains backup, retry confirms it; conflict never overwrites automatically',async()=>{
  let fail=true;const c=setup(async()=>{if(fail)throw Error('offline');return {revision:'22'};});
@@ -41,7 +41,7 @@ test('network failure retains backup, retry confirms it; conflict never overwrit
  c.write=async()=>{throw Object.assign(Error('conflict'),{code:'40001'});};c.queue(freshState());assert.equal(await c.flush(),false);assert.ok(c.conflict);assert.ok(c.latest);}finally{c.stop();}
 });
 test('late response after account change does not mark another account saved',async()=>{
- let release;const c=setup(()=>new Promise(r=>release=r));c.queue(freshState());const promise=c.flush();c.stop();release({revision:'50'});assert.equal(await promise,false);assert.equal(c.revision,'9007199254740993');assert.equal(readBackup(c.storage,'a').pending,true);assert.equal(readBackup(c.storage,'b'),null);assert.throws(()=>c.queue(freshState()));
+ let release;const c=setup(()=>new Promise(r=>release=r));c.queue(freshState());const promise=c.flush();await Promise.resolve();c.stop();release({revision:'50'});assert.equal(await promise,false);assert.equal(c.revision,'9007199254740993');assert.equal(readBackup(c.storage,'a').pending,true);assert.equal(readBackup(c.storage,'b'),null);assert.throws(()=>c.queue(freshState()));
  c.storage.setItem(backupKey('b'),c.storage.getItem(backupKey('a')));assert.throws(()=>readBackup(c.storage,'b'));
 });
 test('combat statistics describe real abilities and update ultimate values without changing state',()=>{
@@ -51,4 +51,41 @@ test('combat statistics describe real abilities and update ultimate values witho
  assert.equal(JSON.stringify(s),before);s.style='aggressive';const f=startCombat(s,'attack');assert.equal(playerStatistics(f.player).length,4);f.ultimate.remaining=6;
  assert.equal(playerStatistics(f.player,f).find(r=>r[0]==='Prob. crítica')[1],'47%');assert.equal(f.player.criticalChance,.12);
  f.player.penetration=.2;f.player.vampirism=.1;assert.equal(playerStatistics(f.player).length,6);
+});
+
+test('A/B/I official cloud wins over old confirmed backups; old backup schema remains readable',()=>{
+ const store=storage(),state=freshState(),data=encodeCloud(state);
+ store.setItem(backupKey('a'),JSON.stringify({uid:'a',revision:'1',pending:false,data}));
+ const local=readBackup(store,'a');assert.equal(JSON.stringify(local.state),JSON.stringify(state));
+ assert.equal(startupChoice({revision:'30',data},local),'cloud');
+ assert.equal(startupChoice({revision:'30',data},null),'cloud');
+ assert.equal(startupChoice(null,local),'import');
+});
+test('C/D/E/F/H pending changes survive outage; reconnect reads revision before writing',async()=>{
+ let revision='1',offline=true,writes=0,reads=0;
+ const store=storage(),s=freshState();
+ const c=new CloudSync({uid:'a',revision,state:s,storage:store,delay:100000,
+ read:async()=>{reads++;if(offline)throw Error('offline');return {revision,data:encodeCloud(s)};},
+ write:async()=>{writes++;return {revision:String(++revision)};}});
+ try{
+  s.levels.attack=5;c.queue(s);assert.equal(await c.flush(),false);assert.equal(writes,0);
+  assert.equal(readBackup(store,'a').state.levels.attack,5);assert.ok(readBackup(store,'a').pending);
+  offline=false;assert.equal(await c.flush(),true);assert.equal(writes,1);assert.equal(reads,2);
+  revision='3';s.levels.attack=6;c.queue(s);assert.equal(await c.flush(),false);assert.ok(c.conflict);assert.equal(writes,1);
+  assert.equal(readBackup(store,'a').state.levels.attack,6);assert.ok(readBackup(store,'a').pending);
+  assert.equal(startupChoice({revision:'3'},readBackup(store,'a')),'conflict');
+ }finally{c.stop();}
+});
+test('G foreign backup owner is rejected and never selected',()=>{
+ const store=storage();store.setItem(backupKey('b'),JSON.stringify({uid:'a',revision:'1',pending:true,data:encodeCloud(freshState())}));
+ assert.throws(()=>readBackup(store,'b'));
+});
+test('pending backup resumes only on its exact base revision',()=>{
+ assert.equal(startupChoice({revision:'9007199254740993'},{revision:'9007199254740993',pending:true}),'resume');
+ assert.equal(startupChoice({revision:'9007199254740994'},{revision:'9007199254740993',pending:true}),'conflict');
+});
+
+test('a late revision check does not mistake our own confirmed write for a foreign device',async()=>{
+ let release;const c=new CloudSync({uid:'a',revision:'1',state:freshState(),storage:storage(),write:async()=>({revision:'2'}),read:()=>new Promise(r=>release=r)});
+ try{const checking=c.check();c.revision='2';release({revision:'1',data:encodeCloud(freshState())});assert.equal(await checking,true);assert.equal(c.conflict,false);}finally{c.stop();}
 });

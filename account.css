@@ -8,3 +8,16 @@
 .ranking-table{width:100%;border-collapse:collapse}.ranking-table td,.ranking-table th{padding:16px 8px;text-align:left;border-bottom:1px solid #373c30;overflow-wrap:anywhere}.ranking-table .self{background:#c9ac6922}
 .stat-row{flex-wrap:wrap;gap:8px 16px}.stat-row span{white-space:normal}.stat-row .effective{color:#e8c673}
 #ranking h1{font-size:clamp(26px,5vw,42px)}
+
+#security-info{overflow-wrap:anywhere}#archive-list{max-width:100%;width:100%}#recovery-tools{margin-top:20px;border-top:1px solid #383c2e;padding-top:16px}
+
+.settings-trigger{border:1px solid #6c5936;border-radius:6px;padding:7px 12px;color:var(--gold)}
+.account-settings{width:min(420px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;margin:auto;padding:24px;border:1px solid #6c5936;border-radius:12px;background:#151813;color:#e9e7da;box-shadow:0 24px 80px #0009}
+.account-settings::backdrop{background:#080a08cc}
+.settings-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.settings-heading h2{margin:0;color:var(--gold)}
+#settings-player-name,#settings-cloud-status{overflow-wrap:anywhere}
+#settings-cloud-status{line-height:1.6;color:#c0c0ad;margin:12px 0 24px}
+.settings-actions{display:grid;gap:12px}.settings-actions button{min-height:44px}
+.account-settings button:focus-visible,.settings-trigger:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+@media(max-width:480px){.account-settings{padding:20px}.account-tools #cloud-status{flex-basis:100%}}

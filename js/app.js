@@ -170,12 +170,7 @@ $('import').addEventListener('change',async e=>{
   const file=e.target.files[0];if(!file||blocked())return;
   try{
     if(file.size>20*1024*1024)throw Error('El archivo supera 20 MB.');
-    const next=decode(await file.text());
-    if(!confirm('¿Reemplazar la partida por esta copia validada?'+(next.migration?' Se conservará el original v1.':'')))return;
-    // Retain the replaced local save before committing the import.
-    const previous=localStorage.getItem(backupKey(account.uid));if(previous)localStorage.setItem(backupKey(account.uid)+'.before-import',previous);
-    clearTimeout(timer);next.pending=null;state=next;fight=null;saveBlocked=false;persist();render();toast('Partida importada.');
-    if(state.afk.active&&!blocked())timer=setTimeout(()=>begin(true),C.afk.delay);
+    await account.recover(await file.text());
   }catch(error){toast('No se pudo importar: '+error.message);}finally{e.target.value='';}
 });
 // Fallback protection where Web Locks is unavailable: suspend stale tabs.

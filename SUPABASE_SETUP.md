@@ -1,5 +1,7 @@
 # CavernaBURX 1.4 — Activación manual de cuentas y nube
 
+Actualización de sincronización: véase [SINCRONIZACION-1.4.md](SINCRONIZACION-1.4.md). La nube se carga automáticamente; la recuperación solo aparece ante cambios pendientes divergentes o restauración explícita. No requiere SQL adicional ni nuevas variables.
+
 La implementación está preparada en `codex/cavernaburx-1-4`. **No se ha conectado ni modificado el Supabase, Google Cloud o Vercel del propietario. No se ha desplegado ni integrado en main.** No publiques hasta completar la validación real de este documento. La producción 1.3 puede seguir funcionando mientras se prepara una vista previa.
 
 ## 1. URL y clave pública — propietario
@@ -109,13 +111,13 @@ El propietario debe aprobar la integración en `main` después de probar la prev
 7. Usa PC y móvil simultáneamente, modifica ambos: uno podrá guardar y el otro mostrará conflicto. Exporta las copias y elige explícitamente al volver a entrar. No se fusionan recursos.
 8. Intenta cerrar sesión con pendientes: debe advertirse. Si decides salir, el respaldo queda asociado a esa cuenta en ese navegador.
 
-Hay debounce de 1,2 segundos, un escritor por cuenta/pestaña, comprobación de revisión en PostgreSQL y reintentos de 5 a 60 segundos. Las peticiones RPC tienen plazo de 15 segundos. Un acuse perdido puede producir un conflicto aunque la escritura se haya confirmado: elegir una copia es más seguro que sobrescribir automáticamente. No se promete sincronización en tiempo real ni progreso offline.
+Hay debounce de 1,2 segundos, un escritor por cuenta/pestaña, comprobación de revisión en PostgreSQL y reintentos de 5 a 60 segundos. Las peticiones RPC tienen plazo de 15 segundos. Un acuse perdido puede producir un conflicto aunque la escritura se haya confirmado: se abre recuperación excepcional con archivo de ambas versiones y confirmación. No se promete sincronización en tiempo real ni progreso offline.
 
 ## 10. Migración de partidas — propietario
 
 - **Misma URL que 1.3:** se detectan `cavernaburx.save.v2` y v1; la copia original nunca se elimina ni sobrescribe por el guardado de cuenta.
 - **Partida en HTML local o localhost:** exporta JSON desde 1.3. El navegador no comparte almacenamiento entre archivo, localhost y producción. Tras entrar en 1.4 usa Partida → Importar JSON, confirma el reemplazo y espera Guardado.
-- Solo local: se ofrece importarla, cancelar o crear una nueva. Solo nube: se recupera. Ambas: se muestran oro, poder y niveles para elegir. Sin ninguna: se crea solo después de una lectura de nube correcta.
+- Solo local: se ofrece importarla, cancelar o crear una nueva. Solo nube: se recupera. Ambas: se carga la nube automáticamente si la local está confirmada; solo se comparan copias si hay cambios pendientes divergentes. Sin ninguna: se crea solo después de una lectura de nube correcta.
 - Al importar una copia sin propietario se exige confirmar que es tuya. Tras la primera importación confirmada se registra la cuenta propietaria local; no se ofrece a otras cuentas.
 - Antes de sustituir nube se permite exportarla y se conserva una copia por revisión en el navegador. Los respaldos de cuenta usan `cavernaburx.account.<UID>`, separados de las claves antiguas.
 - Una copia dañada se puede descargar y cancelar. Si decides continuar, se conserva el original antes de reemplazar el respaldo. Una nube incompatible bloquea el acceso: no se crea una partida nueva para ocultar el error.
