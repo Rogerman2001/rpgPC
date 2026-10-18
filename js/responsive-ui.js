@@ -30,11 +30,15 @@ const modal=make('dialog','statistics-modal','<div class="settings-heading"><h2 
 modal.setAttribute('aria-labelledby','statistics-modal-title');modal.id='statistics-modal';document.body.append(modal);
 const mq=matchMedia('(min-width: 1100px)');let collapsed=false;
 function fitWorkspace(){
+ if(!grid.getClientRects().length)return;
  const remaining=innerHeight-(grid.getBoundingClientRect().top+scrollY)-document.querySelector('footer').getBoundingClientRect().height-20;
  grid.style.setProperty('--workspace-height',Math.max(260,remaining)+'px');
 }
 window.addEventListener('resize',()=>requestAnimationFrame(fitWorkspace));
+document.addEventListener('display-scale-changed',()=>requestAnimationFrame(fitWorkspace));
 new ResizeObserver(()=>requestAnimationFrame(fitWorkspace)).observe(document.querySelector('.account-tools'));
+const pageObserver=new MutationObserver(()=>requestAnimationFrame(fitWorkspace));
+for(const page of document.querySelectorAll('.page'))pageObserver.observe(page,{attributes:true,attributeFilter:['class']});
 function layout(){
  if(modal.open)modal.close();if(analysisModal.open)analysisModal.close();
  statsHost.append(statistics);selector.open=mq.matches;$('selected-cavern').tabIndex=mq.matches?-1:0;

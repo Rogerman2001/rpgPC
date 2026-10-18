@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/game.test.js tests/strategy.test.js tests/ultimate.test.js tests/cloud.test.js",
+    "test": "node --test tests/game.test.js tests/strategy.test.js tests/ultimate.test.js tests/cloud.test.js tests/display.test.js",
     "test:balance": "node tests/simulate-builds.mjs",
     "test:browser": "node tests/accounts-browser.mjs",
     "start": "node server.js",

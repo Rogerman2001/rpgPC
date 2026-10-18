@@ -46,6 +46,26 @@ try{
  const legacy=freshState();legacy.levels.attack=5;const original=JSON.stringify(legacy),c=await context(a,original),p=await c.newPage();await p.goto(base);await p.waitForSelector('#profile-form',{state:'visible'});
  await p.fill('#username','Admin');assert.ok(await p.locator('#confirm-name').isDisabled());await p.fill('#username','Taken_Name');await p.click('#confirm-name');await p.waitForFunction(()=>document.querySelector('#account-message').textContent.includes('ocupado'));await p.fill('#username','Test_Warrior');await p.click('#confirm-name');
  await p.waitForSelector('#account-decision',{state:'visible'});assert.match(await p.locator('#decision-description').textContent(),/Copia local/);await p.getByRole('button',{name:'Restaurar copia local (recuperación avanzada)',exact:true}).click();await p.waitForSelector('.shell:not([hidden])');await p.waitForSelector('.boss-choice',{state:'attached'});assert.equal(await p.locator('#account-name').textContent(),'Test_Warrior');assert.equal(await p.evaluate(()=>localStorage.getItem('cavernaburx.save.v2')),original);
+ // Display preferences affect only presentation and survive reload.
+ await p.waitForFunction(()=>document.querySelector('#cloud-status').textContent==='Guardado en la nube');
+ const progressBeforeScale=users.get(a).save.data.payload;
+ for(const [width,height,expected] of [[1366,768,.9],[1920,1080,1],[2560,1440,1.25],[3840,2160,1.5],[1024,768,1],[390,844,1],[360,800,1],[320,568,1]]){
+  await p.setViewportSize({width,height});await p.waitForFunction(expected=>Number(getComputedStyle(document.documentElement).getPropertyValue('--ui-scale'))===expected,expected);
+  assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  if(width>=1100){const ratios=await p.locator('.combat-layout').evaluate(el=>{const w=[...el.children].map(x=>x.getBoundingClientRect().width),sum=w.reduce((a,b)=>a+b);return w.map(n=>n/sum);});[.2,.55,.25].forEach((n,i)=>assert.ok(Math.abs(ratios[i]-n)<.002));}
+  if(width===1920||width===2560)await p.screenshot({path:`display-${width}.png`,fullPage:true});
+ }
+ await p.setViewportSize({width:1366,height:768});await p.click('#open-account-settings');await p.locator('#display-settings > summary').click();await p.selectOption('#display-mode','manual');
+ for(let scale=75;scale<=150;scale+=5){
+  await p.locator('#display-manual').evaluate((el,value)=>{el.value=String(value);el.dispatchEvent(new Event('input',{bubbles:true}));},scale);
+  assert.equal(await p.locator('#display-percentage').textContent(),scale+' %');assert.equal(await p.evaluate(()=>Number(document.documentElement.style.getPropertyValue('--ui-scale'))),scale/100);
+  assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  assert.ok(await p.locator('#account-settings').evaluate(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight;}));
+ }
+ for(const scale of [90,100,125,150]){await p.click(`[data-scale="${scale}"]`);assert.equal(await p.locator('#display-mode').inputValue(),'manual');assert.equal(await p.locator('#display-manual').inputValue(),String(scale));}
+ await p.click('[data-scale="125"]');await p.reload();await p.waitForSelector('.boss-choice',{state:'attached'});assert.equal(await p.locator('#display-mode').inputValue(),'manual');assert.equal(await p.locator('#display-manual').inputValue(),'125');
+ await p.click('#open-account-settings');await p.locator('#display-settings > summary').click();await p.click('#display-reset');assert.equal(await p.locator('#display-mode').inputValue(),'auto');assert.equal(await p.locator('#display-manual').inputValue(),'100');await p.click('#close-account-settings');
+ assert.equal(users.get(a).save.data.payload,progressBeforeScale);
  // Responsive presentation uses the same roster/statistic nodes at every size.
  for(const width of [320,360,390,430,768,1024,1366,1920]){
   await p.setViewportSize({width,height:width>=1900?1080:width>=1100?768:844});
@@ -129,5 +149,5 @@ try{
  assert.ok(await defeatPage.locator('#combat-advice').isVisible());assert.ok((await defeatPage.locator('#advice-diagnosis').textContent()).length>0);
  await defeatPage.click('#open-analysis');assert.ok(await defeatPage.locator('#analysis-modal #combat-advice').isVisible());await defeatPage.click('#close-analysis');await defeatPage.locator('.result-panel > #combat-advice').waitFor({state:'visible'});await defeatContext.close();
  const revisionBeforeFailure=users.get(b).save.revision;readFail=true;const broken=await context(b),failure=await broken.newPage();await failure.goto(base);await failure.waitForSelector('#retry-account',{state:'visible'});assert.ok(await failure.locator('.shell').isHidden());assert.equal(users.get(b).save.revision,revisionBeforeFailure);await broken.close();
- assert.deepEqual(errors,[]);console.log('Account browser contracts passed (including eight responsive widths, 20/55/25 proportions, desktop fold, live combat statistics modal, compact cavern selector, settings modal, export contents, close/Escape/focus, mobile layout and original logout): gate, Google redirect, cancellation, profile, duplicate, local migration, confirmed saves, reload, combat, names, ranking, mobile, offline/retry, conflict, logout, account isolation, stale mobile backup, failed load, manual restore and concurrent restore rejection. Hosted OAuth is NOT tested.');
+ assert.deepEqual(errors,[]);console.log('Account browser contracts passed (including display auto/manual 75–150%, profiles/reset/persistence, eight responsive widths, 20/55/25 proportions, desktop fold, live combat statistics modal, compact cavern selector, settings modal, export contents, close/Escape/focus, mobile layout and original logout): gate, Google redirect, cancellation, profile, duplicate, local migration, confirmed saves, reload, combat, names, ranking, mobile, offline/retry, conflict, logout, account isolation, stale mobile backup, failed load, manual restore and concurrent restore rejection. Hosted OAuth is NOT tested.');
 }finally{await browser.close();}

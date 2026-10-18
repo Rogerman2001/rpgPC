@@ -1,3 +1,4 @@
+import './display-settings.js';
 import './responsive-ui.js';
 import './account-settings.js';
 import {createClient} from '@supabase/supabase-js';
