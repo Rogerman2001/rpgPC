@@ -1,8 +1,13 @@
+import {getAccount} from './account-context.js';
+import {totalPower} from './cloud-data.js';
+import {backupKey} from './cloud-sync.js';
+import {playerStatistics,bossStatistics} from './combat-statistics.js';
+const account=getAccount();
 import {CONFIG as C,BOSS_IDS} from './config.js';
 import {stats,cost,buy,maxBuy} from './upgrades.js';
 import {getBoss,rewardFor,unlockProgress} from './bosses.js';
 import {startCombat,stepCombat,unlockAFK} from './combat.js';
-import {freshState,load,save,decode,SAVE_KEY,LEGACY_KEY} from './save.js';
+import {decode} from './save.js';
 import {itemDescription} from './items.js';
 import {packFight,diagnose} from './advice.js';
 import {applyStyle,chargePercent,armorPercentage} from './strategy.js';
@@ -11,14 +16,13 @@ const pct=n=>(100*n).toLocaleString('es-ES',{maximumFractionDigits:1})+'%';
 let state,saveBlocked=false,readOnly=false,fight=null,timer=null,toastTimer,mode='progress';
 // A tab owns the save for its lifetime. Secondary tabs cannot race victories/writes.
 if(navigator.locks){
-  readOnly=!(await new Promise(resolve=>navigator.locks.request('cavernaburx-session',{ifAvailable:true},async lock=>{
+  readOnly=!(await new Promise(resolve=>navigator.locks.request('cavernaburx-game-'+account.uid,{ifAvailable:true},async lock=>{
     resolve(Boolean(lock));if(lock)await new Promise(()=>{});
   })));
 }
-try {const raw=readOnly&&(localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_KEY));state=readOnly?(raw?decode(raw):freshState()):load();}
-catch(e){state=freshState();saveBlocked=true;$('save-status').textContent='Guardado protegido. '+e.message;}
+state=account.state;
 const busy=()=>Boolean(fight&&!fight.done);
-const blocked=()=>readOnly||saveBlocked;
+const blocked=()=>readOnly||saveBlocked||!account.sync.active||account.sync.conflict;
 let adviceWorker=null,adviceId=0;
 function cancelAdvice(){adviceId++;adviceWorker?.terminate();adviceWorker=null;$('combat-advice').hidden=true;}
 function requestAdvice(encounter){
@@ -41,7 +45,7 @@ function renderUltimate(){
   $('ultimate-hint').textContent=active?'Definitiva activa':'Definitiva automática';
 }
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4000);}
-function persist(){if(blocked())return;try{save(state);$('save-status').textContent='Partida guardada · '+new Date().toLocaleTimeString('es-ES');}catch{saveBlocked=true;state.afk.active=false;clearTimeout(timer);$('save-status').textContent='No se pudo guardar. Exporta tu progreso antes de recargar.';toast('Guardado no disponible: partida en pausa. Exporta una copia.');}}
+function persist(){if(blocked())return;try{account.save(state);$('save-status').textContent='Respaldo local actualizado · '+new Date().toLocaleTimeString('es-ES');}catch{saveBlocked=true;state.afk.active=false;clearTimeout(timer);$('save-status').textContent='No se pudo guardar. Exporta tu progreso antes de recargar.';toast('Guardado no disponible: partida en pausa. Exporta una copia.');}}
 function tab(name){document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===name));document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('active',el.dataset.tab===name));}
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
 document.querySelectorAll('[data-subtab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.cavern-pane').forEach(el=>el.hidden=el.id!==b.dataset.subtab);document.querySelectorAll('[data-subtab]').forEach(el=>el.classList.toggle('selected',el===b));}));
@@ -62,7 +66,7 @@ function render(){
   const boss=fight?.boss||getBoss(state,id);
   $('gold').textContent=state.gold.format();
   $('highest').textContent=Math.max(...BOSS_IDS.map(key=>state.bosses[key].highest));
-  $('power').textContent=p.attack.mul(10).add(p.health).add(p.defense.mul(10)).format();
+  $('power').textContent=totalPower(state).format();
   $('item-count').textContent=`${Object.keys(state.items).length}/6`;
   $('speed').value=state.speed;$('boss-rune').textContent=boss.rune;
   $('boss-level').textContent=`${C.caverns[id].toUpperCase()} · NIVEL ${boss.level}${boss.special?' · HITO ESPECIAL':''}`;
@@ -71,8 +75,7 @@ function render(){
   const ps=fight?.player||p,ph=fight?.playerHP||p.health,bh=fight?.bossHP||boss.health;
   $('player-hp').textContent=`${ph.format()} / ${ps.health.format()}`;$('boss-hp').textContent=`${bh.format()} / ${boss.health.format()}`;
   $('player-bar').style.width=`${100*ph.ratio(ps.health)}%`;$('boss-bar').style.width=`${100*bh.ratio(boss.health)}%`;
-  $('player-stats').innerHTML=`<span>ATQ <b>${ps.attack.format()}</b></span><span>DEF <b>${ps.defense.format()}</b></span><span>CRÍT <b>${pct(ps.criticalChance)}</b></span>`;
-  $('boss-stats').innerHTML=`<span>ATQ <b>${boss.attack.format()}</b></span><span>DEF <b>${boss.defense.format()}</b></span>`;
+  renderStats(ps,boss);
   $('fight').disabled=blocked()||busy()||state.afk.active||!progress.unlocked;
   $('repeat').disabled=blocked()||busy()||state.afk.active||!progress.unlocked||!progress.highest;
   $('fight').textContent=`DESAFIAR · Nv. ${progress.next}`;$('repeat').textContent=`REPETIR · ${progress.highest?'Nv. '+progress.highest:'sin victorias'}`;
@@ -90,7 +93,7 @@ function render(){
   $('special-stats').innerHTML=`<span>Crítico <strong>${pct(p.criticalChance)}</strong></span><span>Daño crítico <strong>${pct(p.criticalDamage)}</strong></span><span>Penetración <strong>${pct(p.penetration)}</strong></span><span>Robo de vida <strong>${pct(p.vampirism)}</strong></span><p>Mejoras de oro: solo Ataque, Vida y Defensa. Las reliquias mejoran al superar nuevos niveles.</p>`;
   renderBosses();renderUpgrades(base);renderInventory();renderAFK();renderSummary();
   $('migration-notice').hidden=!state.migration&&!blocked();
-  $('migration-notice').textContent=readOnly?'Esta partida ya está abierta en otra pestaña. Cierra aquella y recarga aquí para jugar.':saveBlocked?'Partida en pausa: revisa Partida y copias de seguridad. El guardado original no se sobrescribe.':state.migration?'Partida antigua migrada. Oro, mejoras y poder conservados; victorias agrupadas por especialización. Copia original disponible en Partida.':'';
+  $('migration-notice').textContent=account.sync.conflict?'Partida en pausa por conflicto de nube. Exporta tu respaldo y pulsa Resolver conflicto.':readOnly?'Esta partida ya está abierta en otra pestaña. Cierra aquella y recarga aquí para jugar.':saveBlocked?'Partida en pausa: revisa Partida y copias de seguridad. El guardado original no se sobrescribe.':state.migration?'Partida antigua migrada. Oro, mejoras y poder conservados; victorias agrupadas por especialización. Copia original disponible en Partida.':'';
   $('export-legacy').hidden=!state.migration&&!saveBlocked;
   $('import').disabled=readOnly;
 }
@@ -144,7 +147,8 @@ function tick(){
     persist();render();if(!fight.won)requestAdvice(fight);if(state.afk.active&&!blocked())timer=setTimeout(()=>begin(true),C.afk.delay);
   }else{renderCombatOnly();renderUltimate();schedule();}
 }
-function renderCombatOnly(){const f=fight;$('player-hp').textContent=`${f.playerHP.format()} / ${f.player.health.format()}`;$('boss-hp').textContent=`${f.bossHP.format()} / ${f.boss.health.format()}`;$('player-bar').style.width=`${100*f.playerHP.ratio(f.player.health)}%`;$('boss-bar').style.width=`${100*f.bossHP.ratio(f.boss.health)}%`;}
+function renderStats(player,boss){for(const [id,rows] of [['player-stats',playerStatistics(player,fight)],['boss-stats',bossStatistics(boss)]]){$(id).replaceChildren();for(const [label,value] of rows){const span=document.createElement('span'),b=document.createElement('b');span.append(label+' ');b.textContent=value;span.append(b);$(id).append(span);}}}
+function renderCombatOnly(){renderStats(fight.player,fight.boss);const f=fight;$('player-hp').textContent=`${f.playerHP.format()} / ${f.player.health.format()}`;$('boss-hp').textContent=`${f.bossHP.format()} / ${f.boss.health.format()}`;$('player-bar').style.width=`${100*f.playerHP.ratio(f.player.health)}%`;$('boss-bar').style.width=`${100*f.bossHP.ratio(f.boss.health)}%`;}
 $('boss-roster').addEventListener('click',e=>{const b=e.target.closest('[data-boss]');if(!b||busy()||state.afk.active||blocked())return;state.selectedBoss=b.dataset.boss;fight=null;cancelAdvice();persist();render();});
 $('fight').addEventListener('click',()=>begin(false,'progress'));
 $('repeat').addEventListener('click',()=>begin(false,'repeat'));
@@ -161,21 +165,23 @@ $('afk-toggle').addEventListener('click',()=>{
 });
 function download(raw,name){const url=URL.createObjectURL(new Blob([raw],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 $('export').addEventListener('click',()=>download(JSON.stringify(state,null,2),'cavernaburx-v2.json'));
-$('export-legacy').addEventListener('click',()=>{const raw=state.migration?.source||localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_KEY);if(raw)download(raw,'cavernaburx-original.json');});
+$('export-legacy').addEventListener('click',()=>{const raw=state.migration?.source||JSON.stringify(state);if(raw)download(raw,'cavernaburx-original.json');});
 $('import').addEventListener('change',async e=>{
-  const file=e.target.files[0];if(!file||readOnly)return;
+  const file=e.target.files[0];if(!file||blocked())return;
   try{
     if(file.size>20*1024*1024)throw Error('El archivo supera 20 MB.');
     const next=decode(await file.text());
     if(!confirm('¿Reemplazar la partida por esta copia validada?'+(next.migration?' Se conservará el original v1.':'')))return;
     // Retain the replaced local save before committing the import.
-    const previous=localStorage.getItem(SAVE_KEY);if(previous)localStorage.setItem('cavernaburx.before-import',previous);
+    const previous=localStorage.getItem(backupKey(account.uid));if(previous)localStorage.setItem(backupKey(account.uid)+'.before-import',previous);
     clearTimeout(timer);next.pending=null;state=next;fight=null;saveBlocked=false;persist();render();toast('Partida importada.');
     if(state.afk.active&&!blocked())timer=setTimeout(()=>begin(true),C.afk.delay);
   }catch(error){toast('No se pudo importar: '+error.message);}finally{e.target.value='';}
 });
 // Fallback protection where Web Locks is unavailable: suspend stale tabs.
-window.addEventListener('storage',e=>{if(e.key===SAVE_KEY&&!readOnly){readOnly=true;clearTimeout(timer);render();}});
-window.addEventListener('pagehide',persist);
+window.addEventListener('storage',e=>{if(e.key===backupKey(account.uid)&&!readOnly){readOnly=true;clearTimeout(timer);render();}});
+document.addEventListener('account-ended',()=>{readOnly=true;clearTimeout(timer);cancelAdvice();});
+document.addEventListener('cloud-conflict',()=>{readOnly=true;clearTimeout(timer);render();});
+window.addEventListener('pagehide',()=>{if(!blocked())account.sync.flush();});
 render();if(!blocked()){persist();if(state.afk.active)timer=setTimeout(()=>begin(true),C.afk.delay);}
 const settingsLink=document.createElement('button');settingsLink.className='text-btn';settingsLink.textContent='Partida y copias ↗';settingsLink.addEventListener('click',()=>tab('settings'));document.querySelector('footer').append(settingsLink);

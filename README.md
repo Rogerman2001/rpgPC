@@ -1,78 +1,65 @@
-# CavernaBURX 1.3 — Definitivas y estrategia
+# CavernaBURX 1.4 — Cuentas y progreso en la nube
 
-Tres definitivas automáticas sustituyen las Rupturas. Curvas independientes revisadas y un consejero de derrotas local con simulaciones en segundo plano. El informe **INFORME-1.3.md** contiene los apartados A–F, las tablas de presupuesto equivalente, los ejemplos reales y los límites encontrados. Los informes 1.1 y 1.2 son históricos.
+Actualización revisable sobre 1.3: acceso obligatorio con Google/Supabase, nombre público único, respaldos por cuenta, guardado con revisiones, recuperación entre dispositivos, ranking provisional y estadísticas de combate ampliadas. Las mecánicas y el balance se conservan.
 
-Pruebas: `npm test` (23 pruebas), `npm run test:balance` (comparaciones reproducibles y campañas de ingresos reales), `npm run test:browser` (Chrome con Playwright opcional). Resultados actuales: `tests/build-results.json`.
+**La activación en Supabase/Google/Vercel es manual y está pendiente.** No se ha desplegado ni integrado en main. Sigue [SUPABASE_SETUP.md](SUPABASE_SETUP.md) antes de publicar; consulta [INFORME-1.4.md](INFORME-1.4.md) para decisiones, pruebas y límites.
 
-Compatibilidad: se mantiene la clave v2 y se añade `rulesVersion: 1`, estilo y registro de hitos. Los guardados anteriores reciben estilo equilibrado; los hitos por debajo de su progreso quedan excluidos de premios retroactivos. No se reinician recursos, mejoras ni reliquias. La migración desde v1 sigue disponible.
+## Ejecutar
 
-RPG incremental estático en español, sin dependencias de producción. Se ha sustituido la cadena infinita de bosses/objetos por **seis bosses permanentes, seis reliquias y niveles independientes sin tope de diseño**.
+Node 22.12+ y npm:
 
-## Ejecutar y publicar
+```sh
+npm ci
+# Copia .env.example a .env.local y configura URL y clave pública.
+npm run build
+npm start
+```
 
-**Archivo para jugar directamente:** abre `CavernaBURX.html` con doble clic en Chrome. Incluye estilos, motor y consejero local; funciona sin servidor. Para llevar una partida desde localhost, exporta su JSON e impórtalo en este archivo: cada ubicación mantiene su propio guardado. Puedes regenerarlo con `node tests/build-portable.mjs` después de editar los módulos.
+Abre http://localhost:4173/. `npm run dev` compila y arranca. El servidor local sirve `dist`, no la raíz del repositorio. Sin configuración el juego muestra una pantalla de acceso cerrada y conserva las partidas antiguas.
 
-`npm start` → http://localhost:4173. Requiere Node 20+ para el servidor y las pruebas; el juego solo necesita un navegador moderno. También sirve cualquier servidor estático. Abre `index.html` mediante HTTP, no mediante file://.
+Vercel utiliza `vercel.json`: compilación `npm run build`, salida `dist`, sin servidor persistente. No publiques la raíz ni secretos. El SDK oficial se incluye en el bundle. Configuración pública: `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`.
 
-En Vercel: importa el repositorio, preset **Other**, sin comando de compilación, directorio de salida `.`. No hay autenticación ni servicios externos. No se ha publicado automáticamente.
+## Guardado y compatibilidad
 
-## Sistemas
+El motor mantiene el formato v2, sus migraciones v1, estadísticas derivadas y magnitudes logarítmicas. La nube almacena el JSON completo como cadena en un documento versionado para no reinterpretar sus números. Las revisiones y posiciones viajan como texto. PostgreSQL calcula y ordena el Poder Total en escala logarítmica.
 
-Cada tarjeta representa un guardián fijo. Seleccionarlo muestra sus estadísticas, especialización, reliquia y botones **DESAFIAR** (máximo derrotado + 1) y **REPETIR** (último nivel vencido de ese mismo guardián). No se cambia de guardián automáticamente. No hay selección libre de niveles anteriores.
+Las claves antiguas permanecen intactas. Los respaldos nuevos están separados por UID. Se compara explícitamente local/nube cuando corresponde; no se suman inventarios ni recursos. Una lectura fallida nunca crea una partida vacía. Conflictos detienen el juego hasta elegir una copia; el cierre con pendientes advierte al usuario. AFK queda pausado al entrar.
 
-| Boss | Especialización | Desbloqueo: uno inicial / los tres iniciales |
-|---|---|---|
-| Ataque | Daño alto, poca defensa | Inicial |
-| Defensa | Armadura alta, 25% resistencia | Inicial |
-| Vida | Mucha vida, regenera 0,5% de vida máxima en su turno | Inicial |
-| Crítico | 30% probabilidad, daño crítico ×2 | 50 / 25 |
-| Penetración | Ignora 65% de defensa | 150 / 75 |
-| Vampirismo | Recupera 20% del daño efectivo infligido | 350 / 175 |
+El ranking es **provisional y no verificado**: el servidor calcula la fórmula, pero el progreso todavía procede del cliente. RLS protege otras cuentas; no convierte las victorias en autoritativas.
 
-Los requisitos son simultáneos y usan niveles **derrotados**. El desbloqueo queda guardado permanentemente.
+`CavernaBURX.html` es el artefacto histórico 1.3 sin cuentas, conservado para recuperación local; no forma parte del build 1.4. Exporta allí tu JSON e impórtalo en la cuenta si deseas trasladarlo. El generador portátil anterior se ha deshabilitado para no sobrescribirlo con una versión que necesita OAuth.
 
-Primera victoria de cada nivel: 100% del oro, +1 nivel del boss y de su única reliquia. Al vencer el nivel 1 se obtiene la reliquia. Repetición: 80% del oro normal, dificultad constante, sin XP, sin niveles, sin objetos nuevos ni desbloqueos. Derrota: no da recompensas. Los bosses no se endurecen con repeticiones.
+## Pruebas
 
-Reliquias de Ataque/Vida/Defensa: multiplicador `1 + 0,025 × nivel`. Crítico: +0,025 al multiplicador crítico por nivel (2,5 puntos porcentuales), sin cambiar la probabilidad del 12%. Penetración: `x / (1 + x)`, con `x = 0,005 × nivel`; robo de vida: misma fórmula con `x = 0,004 × nivel`. Las curaciones usan daño efectivo, no daño excedente, y nunca sobrepasan la vida máxima. Los niveles no tienen límite artificial.
+```sh
+npm test
+npm run test:database
+```
 
-AFK conserva desbloqueo de 200 oro, coste del 0,5% de la recompensa base por combate y entrega del 5% de la recompensa del modo elegido (en repetición: 5% × 80% = 4% de la base). Avanza o repite **el guardián seleccionado**. Una derrota al desafiar pasa a repetir ese mismo boss; si nunca se venció, se detiene. Derrota en repetición o falta de oro detienen AFK. Detenerlo deja finalizar el encuentro en curso. No se simula tiempo offline.
+La segunda utiliza PostgreSQL embebido PGlite, sin proyecto externo ni credenciales. Prepara tablas de Auth de prueba, ejecuta SQL real, aplica roles y verifica permisos, revisiones, perfiles y ranking.
 
-## Fórmulas y configuración
+Pruebas de navegador: requieren Chrome y Playwright disponible. `PLAYWRIGHT_PATH` debe apuntar a su `index.mjs` (no es dependencia de producción). En una terminal PowerShell de pruebas aislada:
 
-`js/config.js` centraliza bases, crecimientos, anclas, requisitos, recompensas, habilidades y porcentajes.
+```powershell
+$env:VITE_SUPABASE_URL='https://testing.supabase.co'
+$env:VITE_SUPABASE_PUBLISHABLE_KEY='sb_publishable_local_test'
+npm run build
+$env:PORT='4174'
+npm start
+```
 
-Para cada estadística: `base × 1,26^(ancla − 1) × crecimiento^(nivel − 1)`. Las anclas son 1 en iniciales, 55 en Crítico, 165 en Penetración y 380 en Vampirismo. Cada boss tiene sus propios multiplicadores, detallados en **INFORME-1.3.md**. El oro usa `28 × 1,30^(ancla − 1) × crecimientoOro^(nivel − 1)`.
+En otra terminal, define `PLAYWRIGHT_PATH` y ejecuta `npm run test:browser`. La suite intercepta todas las llamadas al destino ficticio: prueba los contratos y la interfaz usando el SDK real; **no prueba Google ni Supabase alojado**. Nunca despliegues ese build. Cierra la terminal de prueba o elimina sus dos variables y recompila con tu configuración real al terminar.
 
-Se mantienen mejoras de oro ×1, ×10 y máximo, +15% base por nivel y costes +18%. El daño usa `max(ataque − defensa × (1 − penetración), ataque × 0,08) × (1 − resistencia)`, multiplicado por daño crítico si corresponde. El jugador empieza con vida completa y ataca primero. Las estadísticas se fijan al entrar; compras durante el encuentro se aplican al siguiente.
+`npm run test:legacy-browser` conserva la suite histórica: establece `GAME_URL` a la URL `file:///.../CavernaBURX.html` de tu archivo 1.3. `npm run test:balance` mantiene las simulaciones del motor sin modificar las curvas.
 
-## Guardado v2 y migración
+## Organización
 
-`cavernaburx.save.v2` almacena seis registros `{highest, next, unlocked, wins, repeats}`, hasta seis objetos `{level}`, oro logarítmico, mejoras, boss seleccionado, AFK, velocidad, secuencia y encuentro pendiente. Las estadísticas se derivan de estos datos.
+- `js/bootstrap.js`: acceso, perfil, elección de partida y ranking.
+- `js/cloud-sync.js`, `cloud-data.js`, `account-context.js`: persistencia y estado autenticado.
+- `supabase/migrations/202610180001_accounts.sql`: tablas, índices, RLS, validación y RPC.
+- `js/combat-statistics.js`: presentación de atributos efectivos, sin cambiar combate.
+- `js/app.js`: interfaz del juego autenticado; módulos de combate/progresión separados.
+- `scripts/build.mjs`, `vercel.json`: entrega estática y configuración pública.
+- `tests/`: pruebas de lógica, PostgreSQL, contratos de navegador y simulaciones.
 
-Una partida v1 válida se migra una sola vez:
-
-- Se conservan oro, mejoras, velocidad y desbloqueo AFK. AFK queda detenido para revisar el nuevo sistema.
-- Las antiguas familias 0/3 corresponden a Ataque, 1/4 a Vida y 2/5 a Defensa. Cada profundidad vencida cuenta una vez para su especialización; las repeticiones no cuentan como niveles. Es una conversión de hitos, no una afirmación de equivalencia de dificultad.
-- Solo esas correspondencias generan las tres reliquias iniciales. Nunca se convierte un objeto antiguo en Crítico/Penetración/Vampirismo.
-- Se conserva el poder anterior mediante un multiplicador fijo de legado por estadística: `max(0, logBonusAnterior − logBonusNuevo)`. No crece al repetir ni crea nuevos objetos. La XP antigua no tiene equivalente en el sistema de un nivel por primera victoria; queda en la copia original.
-- La clave v1 permanece intacta. El JSON original se incluye en la exportación v2 y puede descargarse por separado desde **Partida**. Archivos incompatibles o incompletos bloquean el guardado/juego con aviso; nunca se reinician silenciosamente.
-- Importar valida antes de reemplazar, solicita confirmación y conserva el guardado anterior en `cavernaburx.before-import`. Cualquier fallo de almacenamiento pausa el juego para exportar la copia en memoria.
-
-Los encuentros llevan una secuencia y solo pueden resolverse una vez. Recargar abandona un combate parcial, sin devolver el coste AFK ni otorgar victoria. Web Locks permite una única pestaña escritora; hay detección de cambios externos como respaldo. Los datos locales y JSON editables no son un sistema antitrampas contra manipulación deliberada; no hay servidor.
-
-## Archivos y pruebas
-
-- `index.html`, `styles.css`: seis tarjetas, detalle, requisitos, inventario fijo y diseño adaptable.
-- `js/app.js`: UI, temporizadores, controles AFK, copias y bloqueo de pestañas.
-- `js/config.js`, `bosses.js`, `items.js`, `combat.js`, `upgrades.js`: reglas independientes de la UI.
-- `js/save.js`: validación, v2 y migración segura desde v1.
-- `js/numbers.js`: magnitudes en log10, evita desbordamiento de valores convencionales.
-- `tests/game.test.js`, `tests/strategy.test.js`, `tests/ultimate.test.js`: `npm test` (23 pruebas funcionales).
-- `tests/simulate-builds.mjs`: `npm run test:balance`; compras geométricas, presupuestos equivalentes, reliquias ganadas, campañas desde 35 oro y comparaciones de definitivas. Genera `tests/build-results.json`. `tests/simulate.mjs` conserva un acceso compatible.
-- `tests/balance.mjs`: diagnóstico histórico con exploración en copias; no sustenta las conclusiones actuales.
-- `js/strategy.js`: estilos y efectos temporales; `js/advice.js` y `js/advice-worker.js`: diagnóstico y escenarios hipotéticos aislados, sin API externa.
-- `tests/browser-check.mjs`: con servidor activo y Playwright disponible, establece `PLAYWRIGHT_PATH` a su `index.mjs` y ejecuta `npm run test:browser`. Usa Chrome; `BROWSER_CHANNEL` permite otro canal. No es dependencia de producción.
-
-Verificado en Chrome: seis tarjetas, bloqueo, desafíos/repeticiones, inventario, compras, persistencia, AFK, importación/exportación, migración, múltiples pestañas y anchos 390/320 px. Capturas locales excluidas de Git.
-
-Límites técnicos: enteros seguros JavaScript para niveles; números logarítmicos aproximados; 2000 acciones máximas por encuentro para evitar curaciones interminables; importaciones hasta 20 MB; cuota de localStorage dependiente del navegador. Ya no se acumulan objetos/victorias por cada nivel, por lo que los seis registros de bosses y objetos tienen tamaño constante; la lista de hitos cobrados crece con los hitos. Una migrada conserva además su original. El balance a muy largo plazo sigue siendo provisional.
+Los informes 1.1, 1.2 y 1.3 y sus resultados son históricos. La documentación vigente de cuentas y despliegue es SUPABASE_SETUP.md.
