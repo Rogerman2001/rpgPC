@@ -1,0 +1,2712 @@
+{
+  "seed": 73,
+  "weights": {
+    "offensive": {
+      "attack": 0.995,
+      "health": 0.005,
+      "defense": 0
+    },
+    "defensive": {
+      "attack": 0.02,
+      "health": 0.48,
+      "defense": 0.5
+    },
+    "balanced": {
+      "attack": 0.3333333333333333,
+      "health": 0.3333333333333333,
+      "defense": 0.3333333333333333
+    }
+  },
+  "stages": [
+    3,
+    8,
+    25,
+    150
+  ],
+  "method": "Equal initial wallet, no initial relics, actual geometric purchases. Real earned relics and unlocks, rewards escrowed (not reinvested). Three attempts at a wall, three passes. Separate earned-income campaigns start at 35 gold.",
+  "fixed": [
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "914",
+      "upgrades": {
+        "attack": 15,
+        "health": 0,
+        "defense": 0
+      },
+      "battles": 51,
+      "wins": 22,
+      "turns": 450,
+      "ultimateActivations": 39,
+      "playerAttacks": 236,
+      "damage": "18.274",
+      "causes": {
+        "survival": 9,
+        "armor": 9,
+        "pressure": 9,
+        "close": 2
+      },
+      "capped": false,
+      "levels": {
+        "attack": 8,
+        "defense": 6,
+        "health": 8,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.7809078724740995,
+      "unspentAndEarned": "1779",
+      "goldEarned": "1693"
+    },
+    {
+      "build": "offensive",
+      "style": "aggressive",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "914",
+      "upgrades": {
+        "attack": 15,
+        "health": 0,
+        "defense": 0
+      },
+      "battles": 49,
+      "wins": 22,
+      "turns": 348,
+      "ultimateActivations": 23,
+      "playerAttacks": 185,
+      "damage": "20.049",
+      "causes": {
+        "survival": 9,
+        "armor": 9,
+        "pressure": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 8,
+        "defense": 6,
+        "health": 8,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.7644439626003887,
+      "unspentAndEarned": "1779",
+      "goldEarned": "1693"
+    },
+    {
+      "build": "offensive",
+      "style": "defensive",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "914",
+      "upgrades": {
+        "attack": 15,
+        "health": 0,
+        "defense": 0
+      },
+      "battles": 39,
+      "wins": 21,
+      "turns": 473,
+      "ultimateActivations": 33,
+      "playerAttacks": 247,
+      "damage": "15.032",
+      "causes": {
+        "survival": 6,
+        "armor": 6,
+        "damage": 5,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 7,
+        "defense": 6,
+        "health": 8,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.8023853124333672,
+      "unspentAndEarned": "1603",
+      "goldEarned": "1518"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "856",
+      "upgrades": {
+        "attack": 1,
+        "health": 12,
+        "defense": 13
+      },
+      "battles": 51,
+      "wins": 23,
+      "turns": 14157,
+      "ultimateActivations": 1192,
+      "playerAttacks": 7090,
+      "damage": "53.533",
+      "causes": {
+        "damage": 3,
+        "armor": 9,
+        "healing": 9,
+        "close": 1,
+        "pressure": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 7,
+        "defense": 7,
+        "health": 9,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.7922244063270832,
+      "unspentAndEarned": "2025",
+      "goldEarned": "1881"
+    },
+    {
+      "build": "defensive",
+      "style": "aggressive",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "856",
+      "upgrades": {
+        "attack": 1,
+        "health": 12,
+        "defense": 13
+      },
+      "battles": 50,
+      "wins": 23,
+      "turns": 6531,
+      "ultimateActivations": 545,
+      "playerAttacks": 3277,
+      "damage": "26.450",
+      "causes": {
+        "pressure": 9,
+        "armor": 9,
+        "healing": 8,
+        "damage": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 7,
+        "defense": 7,
+        "health": 9,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.7718778267659879,
+      "unspentAndEarned": "2025",
+      "goldEarned": "1881"
+    },
+    {
+      "build": "defensive",
+      "style": "defensive",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "856",
+      "upgrades": {
+        "attack": 1,
+        "health": 12,
+        "defense": 13
+      },
+      "battles": 50,
+      "wins": 23,
+      "turns": 24727,
+      "ultimateActivations": 2059,
+      "playerAttacks": 12375,
+      "damage": "65.651",
+      "causes": {
+        "close": 9,
+        "armor": 3,
+        "healing": 9,
+        "damage": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 7,
+        "defense": 7,
+        "health": 9,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.7806388111135122,
+      "unspentAndEarned": "2025",
+      "goldEarned": "1881"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "856",
+      "upgrades": {
+        "attack": 9,
+        "health": 10,
+        "defense": 11
+      },
+      "battles": 53,
+      "wins": 26,
+      "turns": 3040,
+      "ultimateActivations": 263,
+      "playerAttacks": 1533,
+      "damage": "38.165",
+      "causes": {
+        "close": 1,
+        "pressure": 2,
+        "armor": 9,
+        "damage": 9,
+        "survival": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 9,
+        "defense": 7,
+        "health": 10,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.8256149513614162,
+      "unspentAndEarned": "2726",
+      "goldEarned": "2582"
+    },
+    {
+      "build": "balanced",
+      "style": "aggressive",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "856",
+      "upgrades": {
+        "attack": 9,
+        "health": 10,
+        "defense": 11
+      },
+      "battles": 53,
+      "wins": 25,
+      "turns": 2305,
+      "ultimateActivations": 193,
+      "playerAttacks": 1165,
+      "damage": "35.170",
+      "causes": {
+        "survival": 8,
+        "close": 4,
+        "armor": 7,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 9,
+        "defense": 6,
+        "health": 10,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.8172371850570717,
+      "unspentAndEarned": "2591",
+      "goldEarned": "2447"
+    },
+    {
+      "build": "balanced",
+      "style": "defensive",
+      "logBudget": 3,
+      "seed": 73,
+      "spent": "856",
+      "upgrades": {
+        "attack": 9,
+        "health": 10,
+        "defense": 11
+      },
+      "battles": 55,
+      "wins": 28,
+      "turns": 4552,
+      "ultimateActivations": 384,
+      "playerAttacks": 2290,
+      "damage": "46.423",
+      "causes": {
+        "pressure": 9,
+        "armor": 9,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 9,
+        "defense": 8,
+        "health": 11,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.8177866902414469,
+      "unspentAndEarned": "3288",
+      "goldEarned": "3144"
+    },
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 170,
+      "wins": 132,
+      "turns": 1390,
+      "ultimateActivations": 107,
+      "playerAttacks": 761,
+      "damage": "2,33e9",
+      "causes": {
+        "survival": 21,
+        "armor": 8,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 51,
+        "defense": 38,
+        "health": 43,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9709815442603561,
+      "unspentAndEarned": "7,84e7",
+      "goldEarned": "6,98e7"
+    },
+    {
+      "build": "offensive",
+      "style": "aggressive",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 169,
+      "wins": 133,
+      "turns": 1105,
+      "ultimateActivations": 81,
+      "playerAttacks": 619,
+      "damage": "2,37e9",
+      "causes": {
+        "survival": 21,
+        "damage": 9,
+        "armor": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 52,
+        "defense": 38,
+        "health": 43,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.97821038204957,
+      "unspentAndEarned": "9,65e7",
+      "goldEarned": "8,79e7"
+    },
+    {
+      "build": "offensive",
+      "style": "defensive",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 169,
+      "wins": 132,
+      "turns": 1738,
+      "ultimateActivations": 129,
+      "playerAttacks": 935,
+      "damage": "2,36e9",
+      "causes": {
+        "survival": 19,
+        "armor": 9,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 51,
+        "defense": 38,
+        "health": 43,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9710691947813643,
+      "unspentAndEarned": "7,84e7",
+      "goldEarned": "6,98e7"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 150,
+      "wins": 122,
+      "turns": 38106,
+      "ultimateActivations": 3173,
+      "playerAttacks": 19114,
+      "damage": "1,33e9",
+      "causes": {
+        "survival": 10,
+        "armor": 9,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 42,
+        "defense": 43,
+        "health": 37,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9526079452535637,
+      "unspentAndEarned": "2,51e7",
+      "goldEarned": "1,46e7"
+    },
+    {
+      "build": "defensive",
+      "style": "aggressive",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 152,
+      "wins": 123,
+      "turns": 34717,
+      "ultimateActivations": 2891,
+      "playerAttacks": 17420,
+      "damage": "1,75e9",
+      "causes": {
+        "close": 5,
+        "survival": 10,
+        "armor": 5,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 42,
+        "defense": 43,
+        "health": 38,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9598167085334315,
+      "unspentAndEarned": "2,55e7",
+      "goldEarned": "1,51e7"
+    },
+    {
+      "build": "defensive",
+      "style": "defensive",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 151,
+      "wins": 121,
+      "turns": 42749,
+      "ultimateActivations": 3563,
+      "playerAttacks": 21435,
+      "damage": "1,05e9",
+      "causes": {
+        "survival": 10,
+        "close": 8,
+        "armor": 3,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 42,
+        "defense": 43,
+        "health": 36,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9555211639262406,
+      "unspentAndEarned": "2,47e7",
+      "goldEarned": "1,43e7"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 166,
+      "wins": 138,
+      "turns": 22396,
+      "ultimateActivations": 1858,
+      "playerAttacks": 11267,
+      "damage": "1,43e10",
+      "causes": {
+        "survival": 10,
+        "armor": 9,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 48,
+        "defense": 46,
+        "health": 44,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9877069411377113,
+      "unspentAndEarned": "6,17e7",
+      "goldEarned": "5,34e7"
+    },
+    {
+      "build": "balanced",
+      "style": "aggressive",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 155,
+      "wins": 137,
+      "turns": 15397,
+      "ultimateActivations": 1276,
+      "playerAttacks": 7767,
+      "damage": "1,33e10",
+      "causes": {
+        "survival": 6,
+        "armor": 6,
+        "healing": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 47,
+        "defense": 45,
+        "health": 45,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9909128041026142,
+      "unspentAndEarned": "5,45e7",
+      "goldEarned": "4,62e7"
+    },
+    {
+      "build": "balanced",
+      "style": "defensive",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 167,
+      "wins": 139,
+      "turns": 24973,
+      "ultimateActivations": 2078,
+      "playerAttacks": 12556,
+      "damage": "1,24e10",
+      "causes": {
+        "survival": 10,
+        "armor": 9,
+        "close": 3,
+        "healing": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 48,
+        "defense": 47,
+        "health": 44,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9826214602879652,
+      "unspentAndEarned": "6,66e7",
+      "goldEarned": "5,83e7"
+    },
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,93e24",
+      "upgrades": {
+        "attack": 321,
+        "health": 290,
+        "defense": 0
+      },
+      "battles": 611,
+      "wins": 563,
+      "turns": 21841,
+      "ultimateActivations": 1773,
+      "playerAttacks": 11202,
+      "damage": "2,91e25",
+      "causes": {
+        "survival": 32,
+        "healing": 9,
+        "close": 1,
+        "armor": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 204,
+        "defense": 168,
+        "health": 149,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9934511870633139,
+      "unspentAndEarned": "2,40e25",
+      "goldEarned": "2,39e25"
+    },
+    {
+      "build": "offensive",
+      "style": "aggressive",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,93e24",
+      "upgrades": {
+        "attack": 321,
+        "health": 290,
+        "defense": 0
+      },
+      "battles": 613,
+      "wins": 565,
+      "turns": 21149,
+      "ultimateActivations": 1718,
+      "playerAttacks": 10857,
+      "damage": "4,01e25",
+      "causes": {
+        "close": 10,
+        "survival": 28,
+        "healing": 9,
+        "armor": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 204,
+        "defense": 169,
+        "health": 150,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9936396608046508,
+      "unspentAndEarned": "2,40e25",
+      "goldEarned": "2,39e25"
+    },
+    {
+      "build": "offensive",
+      "style": "defensive",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,93e24",
+      "upgrades": {
+        "attack": 321,
+        "health": 290,
+        "defense": 0
+      },
+      "battles": 614,
+      "wins": 565,
+      "turns": 20981,
+      "ultimateActivations": 1701,
+      "playerAttacks": 10773,
+      "damage": "2,25e25",
+      "causes": {
+        "survival": 33,
+        "healing": 9,
+        "armor": 6,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 207,
+        "defense": 168,
+        "health": 148,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9932110096402955,
+      "unspentAndEarned": "4,36e25",
+      "goldEarned": "4,35e25"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,00e24",
+      "upgrades": {
+        "attack": 297,
+        "health": 317,
+        "defense": 319
+      },
+      "battles": 589,
+      "wins": 543,
+      "turns": 35945,
+      "ultimateActivations": 2959,
+      "playerAttacks": 18244,
+      "damage": "1,01e24",
+      "causes": {
+        "survival": 10,
+        "armor": 18,
+        "healing": 9,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 190,
+        "defense": 173,
+        "health": 139,
+        "critical": 38,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9935208049279951,
+      "unspentAndEarned": "3,70e24",
+      "goldEarned": "2,70e24"
+    },
+    {
+      "build": "defensive",
+      "style": "aggressive",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,00e24",
+      "upgrades": {
+        "attack": 297,
+        "health": 317,
+        "defense": 319
+      },
+      "battles": 591,
+      "wins": 544,
+      "turns": 32188,
+      "ultimateActivations": 2641,
+      "playerAttacks": 16366,
+      "damage": "1,40e24",
+      "causes": {
+        "close": 6,
+        "armor": 17,
+        "healing": 9,
+        "damage": 9,
+        "survival": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 190,
+        "defense": 173,
+        "health": 140,
+        "critical": 38,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9941292108175288,
+      "unspentAndEarned": "3,70e24",
+      "goldEarned": "2,70e24"
+    },
+    {
+      "build": "defensive",
+      "style": "defensive",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,00e24",
+      "upgrades": {
+        "attack": 297,
+        "health": 317,
+        "defense": 319
+      },
+      "battles": 588,
+      "wins": 542,
+      "turns": 39466,
+      "ultimateActivations": 3243,
+      "playerAttacks": 20004,
+      "damage": "7,92e23",
+      "causes": {
+        "close": 3,
+        "armor": 18,
+        "healing": 9,
+        "damage": 8,
+        "pressure": 1,
+        "survival": 7
+      },
+      "capped": false,
+      "levels": {
+        "attack": 189,
+        "defense": 173,
+        "health": 138,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9923214517423143,
+      "unspentAndEarned": "7,51e24",
+      "goldEarned": "6,51e24"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "8,91e24",
+      "upgrades": {
+        "attack": 314,
+        "health": 315,
+        "defense": 316
+      },
+      "battles": 610,
+      "wins": 564,
+      "turns": 23882,
+      "ultimateActivations": 1947,
+      "playerAttacks": 12223,
+      "damage": "1,08e25",
+      "causes": {
+        "survival": 9,
+        "close": 1,
+        "armor": 9,
+        "healing": 9,
+        "pressure": 18
+      },
+      "capped": false,
+      "levels": {
+        "attack": 201,
+        "defense": 175,
+        "health": 146,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9958558977159144,
+      "unspentAndEarned": "1,61e25",
+      "goldEarned": "1,50e25"
+    },
+    {
+      "build": "balanced",
+      "style": "aggressive",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "8,91e24",
+      "upgrades": {
+        "attack": 314,
+        "health": 315,
+        "defense": 316
+      },
+      "battles": 618,
+      "wins": 568,
+      "turns": 22208,
+      "ultimateActivations": 1806,
+      "playerAttacks": 11388,
+      "damage": "1,50e25",
+      "causes": {
+        "survival": 23,
+        "armor": 9,
+        "healing": 9,
+        "pressure": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 203,
+        "defense": 175,
+        "health": 147,
+        "critical": 39,
+        "penetration": 4,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9934715221683333,
+      "unspentAndEarned": "2,39e25",
+      "goldEarned": "2,28e25"
+    },
+    {
+      "build": "balanced",
+      "style": "defensive",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "8,91e24",
+      "upgrades": {
+        "attack": 314,
+        "health": 315,
+        "defense": 316
+      },
+      "battles": 611,
+      "wins": 563,
+      "turns": 23835,
+      "ultimateActivations": 1938,
+      "playerAttacks": 12199,
+      "damage": "8,39e24",
+      "causes": {
+        "close": 2,
+        "survival": 10,
+        "armor": 9,
+        "healing": 9,
+        "pressure": 9,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 200,
+        "defense": 176,
+        "health": 145,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9955746710397761,
+      "unspentAndEarned": "1,43e25",
+      "goldEarned": "1,33e25"
+    },
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "10,00e149",
+      "upgrades": {
+        "attack": 2060,
+        "health": 2029,
+        "defense": 0
+      },
+      "battles": 3769,
+      "wins": 3710,
+      "turns": 25634,
+      "ultimateActivations": 1822,
+      "playerAttacks": 14672,
+      "damage": "8,66e131",
+      "causes": {
+        "survival": 42,
+        "healing": 9,
+        "close": 6,
+        "armor": 2
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1300,
+        "defense": 1103,
+        "health": 878,
+        "critical": 319,
+        "penetration": 92,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9994177745820141,
+      "unspentAndEarned": "5,05e150",
+      "goldEarned": "5,05e150"
+    },
+    {
+      "build": "offensive",
+      "style": "aggressive",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "10,00e149",
+      "upgrades": {
+        "attack": 2060,
+        "health": 2029,
+        "defense": 0
+      },
+      "battles": 3770,
+      "wins": 3712,
+      "turns": 26322,
+      "ultimateActivations": 1879,
+      "playerAttacks": 15017,
+      "damage": "1,63e132",
+      "causes": {
+        "survival": 43,
+        "healing": 9,
+        "close": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1301,
+        "defense": 1103,
+        "health": 880,
+        "critical": 318,
+        "penetration": 92,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9995546083685385,
+      "unspentAndEarned": "4,80e150",
+      "goldEarned": "4,80e150"
+    },
+    {
+      "build": "offensive",
+      "style": "defensive",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "10,00e149",
+      "upgrades": {
+        "attack": 2060,
+        "health": 2029,
+        "defense": 0
+      },
+      "battles": 3761,
+      "wins": 3706,
+      "turns": 24512,
+      "ultimateActivations": 1733,
+      "playerAttacks": 14109,
+      "damage": "6,58e131",
+      "causes": {
+        "survival": 41,
+        "healing": 9,
+        "armor": 4,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1299,
+        "defense": 1103,
+        "health": 877,
+        "critical": 318,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9986637686316191,
+      "unspentAndEarned": "1,40e150",
+      "goldEarned": "1,40e150"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "9,06e149",
+      "upgrades": {
+        "attack": 2036,
+        "health": 2056,
+        "defense": 2058
+      },
+      "battles": 3747,
+      "wins": 3690,
+      "turns": 35110,
+      "ultimateActivations": 2626,
+      "playerAttacks": 19400,
+      "damage": "3,08e130",
+      "causes": {
+        "survival": 12,
+        "armor": 9,
+        "healing": 18,
+        "damage": 9,
+        "pressure": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1288,
+        "defense": 1107,
+        "health": 868,
+        "critical": 318,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9990982972980066,
+      "unspentAndEarned": "5,90e149",
+      "goldEarned": "4,95e149"
+    },
+    {
+      "build": "defensive",
+      "style": "aggressive",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "9,06e149",
+      "upgrades": {
+        "attack": 2036,
+        "health": 2056,
+        "defense": 2058
+      },
+      "battles": 3747,
+      "wins": 3692,
+      "turns": 30726,
+      "ultimateActivations": 2269,
+      "playerAttacks": 17209,
+      "damage": "5,77e130",
+      "causes": {
+        "close": 7,
+        "armor": 9,
+        "healing": 18,
+        "pressure": 5,
+        "damage": 4,
+        "survival": 12
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1287,
+        "defense": 1108,
+        "health": 870,
+        "critical": 318,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9990769892609168,
+      "unspentAndEarned": "5,77e149",
+      "goldEarned": "4,83e149"
+    },
+    {
+      "build": "defensive",
+      "style": "defensive",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "9,06e149",
+      "upgrades": {
+        "attack": 2036,
+        "health": 2056,
+        "defense": 2058
+      },
+      "battles": 3742,
+      "wins": 3686,
+      "turns": 37304,
+      "ultimateActivations": 2806,
+      "playerAttacks": 20495,
+      "damage": "2,45e130",
+      "causes": {
+        "close": 5,
+        "armor": 9,
+        "healing": 18,
+        "damage": 9,
+        "pressure": 9,
+        "survival": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1285,
+        "defense": 1107,
+        "health": 867,
+        "critical": 318,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9991341741184476,
+      "unspentAndEarned": "5,60e149",
+      "goldEarned": "4,66e149"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "8,97e149",
+      "upgrades": {
+        "attack": 2053,
+        "health": 2054,
+        "defense": 2055
+      },
+      "battles": 3764,
+      "wins": 3710,
+      "turns": 27050,
+      "ultimateActivations": 1951,
+      "playerAttacks": 15380,
+      "damage": "3,27e131",
+      "causes": {
+        "survival": 27,
+        "armor": 9,
+        "healing": 18
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1298,
+        "defense": 1108,
+        "health": 875,
+        "critical": 320,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.998914167375933,
+      "unspentAndEarned": "3,66e150",
+      "goldEarned": "3,56e150"
+    },
+    {
+      "build": "balanced",
+      "style": "aggressive",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "8,97e149",
+      "upgrades": {
+        "attack": 2053,
+        "health": 2054,
+        "defense": 2055
+      },
+      "battles": 3769,
+      "wins": 3713,
+      "turns": 26589,
+      "ultimateActivations": 1906,
+      "playerAttacks": 15151,
+      "damage": "6,03e131",
+      "causes": {
+        "survival": 29,
+        "armor": 9,
+        "healing": 18
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1298,
+        "defense": 1109,
+        "health": 877,
+        "critical": 320,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9988499444133511,
+      "unspentAndEarned": "3,66e150",
+      "goldEarned": "3,56e150"
+    },
+    {
+      "build": "balanced",
+      "style": "defensive",
+      "logBudget": 150,
+      "seed": 73,
+      "spent": "8,97e149",
+      "upgrades": {
+        "attack": 2053,
+        "health": 2054,
+        "defense": 2055
+      },
+      "battles": 3762,
+      "wins": 3707,
+      "turns": 26705,
+      "ultimateActivations": 1917,
+      "playerAttacks": 15206,
+      "damage": "2,51e131",
+      "causes": {
+        "close": 9,
+        "armor": 9,
+        "healing": 18,
+        "pressure": 11,
+        "survival": 8
+      },
+      "capped": false,
+      "levels": {
+        "attack": 1295,
+        "defense": 1109,
+        "health": 874,
+        "critical": 320,
+        "penetration": 91,
+        "vampirism": 18
+      },
+      "averageWinnerLife": 0.9989231321180927,
+      "unspentAndEarned": "3,26e150",
+      "goldEarned": "3,16e150"
+    }
+  ],
+  "robustness": [
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 11,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 173,
+      "wins": 134,
+      "turns": 1378,
+      "ultimateActivations": 105,
+      "playerAttacks": 756,
+      "damage": "2,36e9",
+      "causes": {
+        "survival": 23,
+        "armor": 7,
+        "damage": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 53,
+        "defense": 38,
+        "health": 43,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9732550899021793,
+      "unspentAndEarned": "1,20e8",
+      "goldEarned": "1,12e8"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 11,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 150,
+      "wins": 122,
+      "turns": 38114,
+      "ultimateActivations": 3177,
+      "playerAttacks": 19118,
+      "damage": "1,33e9",
+      "causes": {
+        "survival": 9,
+        "armor": 9,
+        "healing": 9,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 42,
+        "defense": 43,
+        "health": 37,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9506099698796313,
+      "unspentAndEarned": "2,51e7",
+      "goldEarned": "1,46e7"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 11,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 169,
+      "wins": 138,
+      "turns": 22412,
+      "ultimateActivations": 1857,
+      "playerAttacks": 11275,
+      "damage": "1,42e10",
+      "causes": {
+        "survival": 13,
+        "armor": 9,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 48,
+        "defense": 46,
+        "health": 44,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9873923029006001,
+      "unspentAndEarned": "6,17e7",
+      "goldEarned": "5,34e7"
+    },
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 22,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 170,
+      "wins": 134,
+      "turns": 1344,
+      "ultimateActivations": 103,
+      "playerAttacks": 739,
+      "damage": "2,32e9",
+      "causes": {
+        "survival": 20,
+        "damage": 9,
+        "close": 2,
+        "armor": 5
+      },
+      "capped": false,
+      "levels": {
+        "attack": 53,
+        "defense": 38,
+        "health": 43,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9754971494498073,
+      "unspentAndEarned": "1,20e8",
+      "goldEarned": "1,12e8"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 22,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 150,
+      "wins": 122,
+      "turns": 38190,
+      "ultimateActivations": 3181,
+      "playerAttacks": 19156,
+      "damage": "1,32e9",
+      "causes": {
+        "survival": 9,
+        "armor": 9,
+        "healing": 9,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 42,
+        "defense": 43,
+        "health": 37,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9532534997972502,
+      "unspentAndEarned": "2,51e7",
+      "goldEarned": "1,46e7"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 22,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 163,
+      "wins": 136,
+      "turns": 22346,
+      "ultimateActivations": 1853,
+      "playerAttacks": 11241,
+      "damage": "1,41e10",
+      "causes": {
+        "survival": 9,
+        "armor": 9,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 46,
+        "defense": 46,
+        "health": 44,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.987539210701473,
+      "unspentAndEarned": "5,05e7",
+      "goldEarned": "4,22e7"
+    },
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 33,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 173,
+      "wins": 134,
+      "turns": 1384,
+      "ultimateActivations": 106,
+      "playerAttacks": 759,
+      "damage": "2,33e9",
+      "causes": {
+        "survival": 22,
+        "armor": 7,
+        "damage": 9,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 53,
+        "defense": 38,
+        "health": 43,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9715973746809036,
+      "unspentAndEarned": "1,20e8",
+      "goldEarned": "1,12e8"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 33,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 149,
+      "wins": 122,
+      "turns": 38390,
+      "ultimateActivations": 3202,
+      "playerAttacks": 19256,
+      "damage": "1,33e9",
+      "causes": {
+        "survival": 6,
+        "armor": 9,
+        "healing": 9,
+        "close": 3
+      },
+      "capped": false,
+      "levels": {
+        "attack": 42,
+        "defense": 43,
+        "health": 37,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9553126017801462,
+      "unspentAndEarned": "2,51e7",
+      "goldEarned": "1,46e7"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 33,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 163,
+      "wins": 136,
+      "turns": 22416,
+      "ultimateActivations": 1856,
+      "playerAttacks": 11276,
+      "damage": "1,41e10",
+      "causes": {
+        "survival": 9,
+        "armor": 9,
+        "healing": 9
+      },
+      "capped": false,
+      "levels": {
+        "attack": 46,
+        "defense": 46,
+        "health": 44,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9871891026258559,
+      "unspentAndEarned": "5,05e7",
+      "goldEarned": "4,22e7"
+    }
+  ],
+  "previousCurves": [
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,14e7",
+      "upgrades": {
+        "attack": 84,
+        "health": 53,
+        "defense": 0
+      },
+      "battles": 183,
+      "wins": 149,
+      "turns": 259,
+      "ultimateActivations": 0,
+      "playerAttacks": 204,
+      "damage": "2,27e8",
+      "causes": {
+        "survival": 33,
+        "close": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 51,
+        "defense": 50,
+        "health": 48,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9712445837389616,
+      "unspentAndEarned": "1,43e8",
+      "goldEarned": "1,34e8"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "8,96e7",
+      "upgrades": {
+        "attack": 60,
+        "health": 81,
+        "defense": 82
+      },
+      "battles": 179,
+      "wins": 146,
+      "turns": 36070,
+      "ultimateActivations": 3008,
+      "playerAttacks": 18108,
+      "damage": "8,34e8",
+      "causes": {
+        "damage": 9,
+        "close": 3,
+        "healing": 9,
+        "armor": 12
+      },
+      "capped": false,
+      "levels": {
+        "attack": 50,
+        "defense": 50,
+        "health": 46,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9675886222126614,
+      "unspentAndEarned": "1,20e8",
+      "goldEarned": "1,09e8"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 8,
+      "seed": 73,
+      "spent": "9,17e7",
+      "upgrades": {
+        "attack": 77,
+        "health": 79,
+        "defense": 80
+      },
+      "battles": 199,
+      "wins": 162,
+      "turns": 3106,
+      "ultimateActivations": 246,
+      "playerAttacks": 1634,
+      "damage": "1,06e9",
+      "causes": {
+        "close": 3,
+        "pressure": 11,
+        "armor": 9,
+        "damage": 14
+      },
+      "capped": false,
+      "levels": {
+        "attack": 55,
+        "defense": 53,
+        "health": 54,
+        "critical": 0,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9608435811687088,
+      "unspentAndEarned": "4,16e8",
+      "goldEarned": "4,07e8"
+    },
+    {
+      "build": "offensive",
+      "style": "balanced",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,93e24",
+      "upgrades": {
+        "attack": 321,
+        "health": 290,
+        "defense": 0
+      },
+      "battles": 685,
+      "wins": 634,
+      "turns": 960,
+      "ultimateActivations": 23,
+      "playerAttacks": 797,
+      "damage": "3,92e23",
+      "causes": {
+        "close": 6,
+        "survival": 30,
+        "pressure": 9,
+        "armor": 6
+      },
+      "capped": false,
+      "levels": {
+        "attack": 199,
+        "defense": 197,
+        "health": 196,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9926814631026102,
+      "unspentAndEarned": "1,53e25",
+      "goldEarned": "1,52e25"
+    },
+    {
+      "build": "defensive",
+      "style": "balanced",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "9,00e24",
+      "upgrades": {
+        "attack": 297,
+        "health": 317,
+        "defense": 319
+      },
+      "battles": 675,
+      "wins": 630,
+      "turns": 44316,
+      "ultimateActivations": 3647,
+      "playerAttacks": 22473,
+      "damage": "9,84e23",
+      "causes": {
+        "close": 7,
+        "damage": 10,
+        "armor": 18,
+        "healing": 9,
+        "pressure": 1
+      },
+      "capped": false,
+      "levels": {
+        "attack": 198,
+        "defense": 199,
+        "health": 191,
+        "critical": 39,
+        "penetration": 3,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9904523087732243,
+      "unspentAndEarned": "1,55e25",
+      "goldEarned": "1,45e25"
+    },
+    {
+      "build": "balanced",
+      "style": "balanced",
+      "logBudget": 25,
+      "seed": 73,
+      "spent": "8,91e24",
+      "upgrades": {
+        "attack": 314,
+        "health": 315,
+        "defense": 316
+      },
+      "battles": 695,
+      "wins": 648,
+      "turns": 23742,
+      "ultimateActivations": 1927,
+      "playerAttacks": 12195,
+      "damage": "9,21e24",
+      "causes": {
+        "survival": 11,
+        "armor": 9,
+        "healing": 9,
+        "pressure": 15,
+        "damage": 3
+      },
+      "capped": false,
+      "levels": {
+        "attack": 202,
+        "defense": 204,
+        "health": 199,
+        "critical": 39,
+        "penetration": 4,
+        "vampirism": 0
+      },
+      "averageWinnerLife": 0.9877548336880507,
+      "unspentAndEarned": "4,31e25",
+      "goldEarned": "4,20e25"
+    }
+  ],
+  "campaigns": [
+    {
+      "build": "offensive",
+      "battles": 6000,
+      "unlocks": {
+        "critical": 316
+      },
+      "milestones": 14,
+      "ultimates": 171,
+      "levels": {
+        "attack": 1415,
+        "defense": 36,
+        "health": 41,
+        "critical": 1,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "turns": 8044,
+      "wins": 5918,
+      "losses": 82,
+      "repeats": 4425,
+      "spent": "1,43e163",
+      "gold": "1,60e163",
+      "repeatGold": "4,40e160",
+      "modelSeconds": 7307.15,
+      "goldPerModelSecond": "2,18e159"
+    },
+    {
+      "build": "defensive",
+      "battles": 6000,
+      "unlocks": {
+        "critical": 1073
+      },
+      "milestones": 0,
+      "ultimates": 89480,
+      "levels": {
+        "attack": 64,
+        "defense": 50,
+        "health": 41,
+        "critical": 1,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "turns": 1078845,
+      "wins": 4943,
+      "losses": 1057,
+      "repeats": 4787,
+      "spent": "8,65e10",
+      "gold": "9,99e10",
+      "repeatGold": "9,80e10",
+      "modelSeconds": 181312.3125,
+      "goldPerModelSecond": "551.110"
+    },
+    {
+      "build": "balanced",
+      "battles": 6000,
+      "unlocks": {
+        "critical": 313
+      },
+      "milestones": 1,
+      "ultimates": 7691,
+      "levels": {
+        "attack": 109,
+        "defense": 49,
+        "health": 46,
+        "critical": 2,
+        "penetration": 0,
+        "vampirism": 0
+      },
+      "turns": 99460,
+      "wins": 4706,
+      "losses": 1294,
+      "repeats": 4500,
+      "spent": "4,44e14",
+      "gold": "4,54e14",
+      "repeatGold": "2,03e14",
+      "modelSeconds": 22162.25,
+      "goldPerModelSecond": "2,05e10"
+    }
+  ],
+  "ultimates": {
+    "balanced": {
+      "fights": 864,
+      "wins": 661,
+      "withoutWins": 659,
+      "activations": 1726,
+      "attacks": 11015,
+      "activatedFights": 484,
+      "shortFights": 256,
+      "shortActivations": 0,
+      "specialFights": 432,
+      "specialWins": 328,
+      "turns": 21369
+    },
+    "aggressive": {
+      "fights": 864,
+      "wins": 638,
+      "withoutWins": 635,
+      "activations": 1223,
+      "attacks": 8014,
+      "activatedFights": 440,
+      "shortFights": 336,
+      "shortActivations": 0,
+      "specialFights": 432,
+      "specialWins": 320,
+      "turns": 15390
+    },
+    "defensive": {
+      "fights": 864,
+      "wins": 667,
+      "withoutWins": 655,
+      "activations": 2439,
+      "attacks": 15366,
+      "activatedFights": 515,
+      "shortFights": 224,
+      "shortActivations": 0,
+      "specialFights": 432,
+      "specialWins": 329,
+      "turns": 30065
+    }
+  },
+  "relativeCritComparison": {
+    "fights": 864,
+    "wins": 635,
+    "withoutWins": 635,
+    "activations": 1283,
+    "attacks": 8425,
+    "activatedFights": 440,
+    "shortFights": 336,
+    "shortActivations": 0,
+    "specialFights": 432,
+    "specialWins": 319,
+    "turns": 16215
+  },
+  "charge5Comparison": {
+    "balanced": {
+      "fights": 864,
+      "wins": 661,
+      "withoutWins": 659,
+      "activations": 1208,
+      "attacks": 11137,
+      "activatedFights": 367,
+      "shortFights": 256,
+      "shortActivations": 0,
+      "specialFights": 432,
+      "specialWins": 328,
+      "turns": 21613
+    },
+    "aggressive": {
+      "fights": 864,
+      "wins": 639,
+      "withoutWins": 635,
+      "activations": 850,
+      "attacks": 8122,
+      "activatedFights": 309,
+      "shortFights": 336,
+      "shortActivations": 0,
+      "specialFights": 432,
+      "specialWins": 320,
+      "turns": 15605
+    },
+    "defensive": {
+      "fights": 864,
+      "wins": 662,
+      "withoutWins": 655,
+      "activations": 1689,
+      "attacks": 15206,
+      "activatedFights": 396,
+      "shortFights": 224,
+      "shortActivations": 0,
+      "specialFights": 432,
+      "specialWins": 329,
+      "turns": 29750
+    }
+  },
+  "durationComparison": {
+    "4": {
+      "balanced": {
+        "fights": 864,
+        "wins": 661,
+        "withoutWins": 659,
+        "activations": 2024,
+        "attacks": 11082,
+        "activatedFights": 484,
+        "shortFights": 256,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 328,
+        "turns": 21503
+      },
+      "aggressive": {
+        "fights": 864,
+        "wins": 636,
+        "withoutWins": 635,
+        "activations": 1431,
+        "attacks": 8110,
+        "activatedFights": 440,
+        "shortFights": 336,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 319,
+        "turns": 15584
+      },
+      "defensive": {
+        "fights": 864,
+        "wins": 664,
+        "withoutWins": 655,
+        "activations": 2833,
+        "attacks": 15241,
+        "activatedFights": 515,
+        "shortFights": 224,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 329,
+        "turns": 29818
+      }
+    },
+    "8": {
+      "balanced": {
+        "fights": 864,
+        "wins": 661,
+        "withoutWins": 659,
+        "activations": 1517,
+        "attacks": 10989,
+        "activatedFights": 484,
+        "shortFights": 256,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 328,
+        "turns": 21317
+      },
+      "aggressive": {
+        "fights": 864,
+        "wins": 640,
+        "withoutWins": 635,
+        "activations": 1087,
+        "attacks": 7954,
+        "activatedFights": 440,
+        "shortFights": 336,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 322,
+        "turns": 15268
+      },
+      "defensive": {
+        "fights": 864,
+        "wins": 667,
+        "withoutWins": 655,
+        "activations": 2161,
+        "attacks": 15449,
+        "activatedFights": 515,
+        "shortFights": 224,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 329,
+        "turns": 30231
+      }
+    }
+  },
+  "magnitudeComparison": {
+    "lower": {
+      "balanced": {
+        "fights": 864,
+        "wins": 661,
+        "withoutWins": 659,
+        "activations": 1743,
+        "attacks": 11153,
+        "activatedFights": 484,
+        "shortFights": 256,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 328,
+        "turns": 21645
+      },
+      "aggressive": {
+        "fights": 864,
+        "wins": 637,
+        "withoutWins": 635,
+        "activations": 1236,
+        "attacks": 8120,
+        "activatedFights": 440,
+        "shortFights": 336,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 319,
+        "turns": 15603
+      },
+      "defensive": {
+        "fights": 864,
+        "wins": 664,
+        "withoutWins": 655,
+        "activations": 2428,
+        "attacks": 15220,
+        "activatedFights": 515,
+        "shortFights": 224,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 329,
+        "turns": 29776
+      }
+    },
+    "higher": {
+      "balanced": {
+        "fights": 864,
+        "wins": 662,
+        "withoutWins": 659,
+        "activations": 1706,
+        "attacks": 10922,
+        "activatedFights": 484,
+        "shortFights": 256,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 329,
+        "turns": 21182
+      },
+      "aggressive": {
+        "fights": 864,
+        "wins": 640,
+        "withoutWins": 635,
+        "activations": 1200,
+        "attacks": 7855,
+        "activatedFights": 440,
+        "shortFights": 336,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 320,
+        "turns": 15070
+      },
+      "defensive": {
+        "fights": 864,
+        "wins": 678,
+        "withoutWins": 655,
+        "activations": 2465,
+        "attacks": 15534,
+        "activatedFights": 515,
+        "shortFights": 224,
+        "shortActivations": 0,
+        "specialFights": 432,
+        "specialWins": 335,
+        "turns": 30390
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "attack",
+      "level": 21,
+      "advice": {
+        "diagnosis": {
+          "code": "survival",
+          "title": "Supervivencia insuficiente",
+          "evidence": "Solo pudiste atacar 1 vez. No llegaste a aprovechar tu definitiva."
+        },
+        "recommendation": "Prueba +3 mejoras de ataque (coste: 3358 oro; requiere ahorrar). En escenarios hipotéticos ganó 0/12, frente a 0/12 sin cambios. No bastó para ganar, pero dejó menos vida al boss. No garantiza la victoria.",
+        "chosen": "attack",
+        "runs": 12,
+        "elapsedMs": 0.900000000000091,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.847287950254099,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.7638885260359248,
+            "meanTurns": 2,
+            "cost": "3358"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.847287950254099,
+            "meanTurns": 2,
+            "cost": "1174"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.847287950254099,
+            "meanTurns": 2,
+            "cost": "428"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.8072594289110828,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.8713050630599083,
+            "meanTurns": 2,
+            "cost": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "defense",
+      "level": 21,
+      "advice": {
+        "diagnosis": {
+          "code": "survival",
+          "title": "Supervivencia insuficiente",
+          "evidence": "Solo pudiste atacar 3 veces. Tu definitiva llegó a activarse."
+        },
+        "recommendation": "No se ha encontrado una mejora pequeña con evidencia suficiente. Repite un nivel superado para reunir oro y vuelve a evaluar; ninguna opción probada garantiza vencer.",
+        "chosen": null,
+        "runs": 12,
+        "elapsedMs": 1.2380000000002838,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9949335374929711,
+            "meanTurns": 6,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.992294543834622,
+            "meanTurns": 6,
+            "cost": "3358"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.991441575641972,
+            "meanTurns": 10,
+            "cost": "1174"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9949335374929711,
+            "meanTurns": 6,
+            "cost": "428"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9936669218662141,
+            "meanTurns": 6,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9943684320594947,
+            "meanTurns": 8,
+            "cost": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "health",
+      "level": 21,
+      "advice": {
+        "diagnosis": {
+          "code": "healing",
+          "title": "La curación compensa tu daño",
+          "evidence": "El boss recuperó 99,9% del daño que le infligiste. Necesitas más daño sostenido."
+        },
+        "recommendation": "No se ha encontrado una mejora pequeña con evidencia suficiente. Repite un nivel superado para reunir oro y vuelve a evaluar; ninguna opción probada garantiza vencer.",
+        "chosen": null,
+        "runs": 12,
+        "elapsedMs": 4.580400000000282,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9960004509976504,
+            "meanTurns": 44,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9379540167756062,
+            "meanTurns": 44,
+            "cost": "3358"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9929836143319127,
+            "meanTurns": 66,
+            "cost": "1174"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9946214542268516,
+            "meanTurns": 48,
+            "cost": "428"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9708689538038485,
+            "meanTurns": 34,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9996295704138443,
+            "meanTurns": 62,
+            "cost": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "critical",
+      "level": 1,
+      "advice": {
+        "diagnosis": {
+          "code": "survival",
+          "title": "Supervivencia insuficiente",
+          "evidence": "Solo pudiste atacar 1 vez. No llegaste a aprovechar tu definitiva."
+        },
+        "recommendation": "No se ha encontrado una mejora pequeña con evidencia suficiente. Prueba otro guardián inicial para conseguir oro y vuelve a evaluar; ninguna opción probada garantiza vencer.",
+        "chosen": null,
+        "runs": 12,
+        "elapsedMs": 0.3083999999998923,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9999977472703382,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9999965738797741,
+            "meanTurns": 2,
+            "cost": "3358"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9999977472703382,
+            "meanTurns": 2,
+            "cost": "1174"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9999977472703382,
+            "meanTurns": 2,
+            "cost": "428"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9999971840879209,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.9999980851797862,
+            "meanTurns": 2,
+            "cost": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "penetration",
+      "level": 1,
+      "advice": {
+        "diagnosis": {
+          "code": "survival",
+          "title": "Supervivencia insuficiente",
+          "evidence": "Solo pudiste atacar 1 vez. No llegaste a aprovechar tu definitiva."
+        },
+        "recommendation": "No se ha encontrado una mejora pequeña con evidencia suficiente. Prueba otro guardián inicial para conseguir oro y vuelve a evaluar; ninguna opción probada garantiza vencer.",
+        "chosen": null,
+        "runs": 12,
+        "elapsedMs": 0.23900000000003274,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "3358"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "1174"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "428"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vampirism",
+      "level": 1,
+      "advice": {
+        "diagnosis": {
+          "code": "survival",
+          "title": "Supervivencia insuficiente",
+          "evidence": "Solo pudiste atacar 1 vez. No llegaste a aprovechar tu definitiva."
+        },
+        "recommendation": "No se ha encontrado una mejora pequeña con evidencia suficiente. Prueba otro guardián inicial para conseguir oro y vuelve a evaluar; ninguna opción probada garantiza vencer.",
+        "chosen": null,
+        "runs": 12,
+        "elapsedMs": 0.2586999999998625,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "3358"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "1174"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "428"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 1,
+            "meanTurns": 2,
+            "cost": "0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "attack",
+      "level": 5,
+      "upgrades": 2,
+      "advice": {
+        "diagnosis": {
+          "code": "close",
+          "title": "Derrota ajustada",
+          "evidence": "Al boss le quedaba 9% de vida. Un ajuste pequeño podría bastar."
+        },
+        "recommendation": "Prueba +3 mejoras de ataque (coste: 74,6 oro; requiere ahorrar). En escenarios hipotéticos ganó 12/12, frente a 0/12 sin cambios. No garantiza la victoria.",
+        "chosen": "attack",
+        "runs": 12,
+        "elapsedMs": 0.7309999999997672,
+        "scenarios": [
+          {
+            "id": "baseline",
+            "label": "Sin cambios",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.2690317076479996,
+            "meanTurns": 10,
+            "cost": "0"
+          },
+          {
+            "id": "attack",
+            "label": "+3 mejoras de ataque",
+            "runs": 12,
+            "wins": 12,
+            "meanBossRemaining": 0,
+            "meanTurns": 8.333333333333334,
+            "cost": "74,6"
+          },
+          {
+            "id": "health",
+            "label": "+3 mejoras de vida",
+            "runs": 12,
+            "wins": 6,
+            "meanBossRemaining": 0.009708477098666414,
+            "meanTurns": 13.5,
+            "cost": "59,7"
+          },
+          {
+            "id": "defense",
+            "label": "+3 mejoras de defensa",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.2690317076479996,
+            "meanTurns": 10,
+            "cost": "49,7"
+          },
+          {
+            "id": "aggressive",
+            "label": "estilo Ofensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.21530509559466662,
+            "meanTurns": 8,
+            "cost": "0"
+          },
+          {
+            "id": "defensive",
+            "label": "estilo Defensivo",
+            "runs": 12,
+            "wins": 0,
+            "meanBossRemaining": 0.3051376553386669,
+            "meanTurns": 12,
+            "cost": "0"
+          }
+        ]
+      }
+    }
+  ],
+  "runtimeSeconds": 2.8857735
+}

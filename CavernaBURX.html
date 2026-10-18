@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101110"><meta name="description" content="Desciende a CavernaBURX: un RPG incremental de bosses, reliquias y poder sin fin."><title>CavernaBURX · El descenso</title><style>
+:root{color-scheme:dark;--bg:#0d0f0e;--panel:#151816;--border:#2a2e27;--text:#e5e4db;--muted:#92988b;--gold:#c9ac69;--green:#98ac83;--red:#b36a58}
+header{position:sticky;top:0;z-index:2;background:#0d0f0ef5;backdrop-filter:blur(12px)}
+[hidden]{display:none!important}
+.ultimate-label{display:flex;justify-content:space-between;font-size:9px;color:var(--gold);margin:9px 0 5px}.ultimate-label strong{font-weight:500}
+.ultimate-track{height:7px;background:#322c1e;border-radius:2px;overflow:hidden}.ultimate-track>div{height:100%;width:0;background:linear-gradient(90deg,#8a682a,#e8c673);transition:width .2s}
+.ultimate-track.ultimate-active{box-shadow:0 0 12px #d6b56066;background:#786431;animation:ultimate-flash .5s ease}
+.ultimate-state{font-size:9px;color:var(--gold);min-height:16px;margin-top:4px}
+.combat-advice{margin-top:18px;padding:16px;border:1px solid #c9ac6940;border-radius:5px;background:#c9ac6908}.combat-advice h3{color:var(--gold);margin-bottom:10px}.combat-advice strong{font-size:12px;font-weight:500}.combat-advice p{font-size:11px;line-height:1.6}
+@keyframes ultimate-flash{50%{box-shadow:0 0 20px #e8c673aa}}
+.cavern-tabs{display:flex;gap:8px;margin-bottom:24px}.cavern-tabs .selected{color:var(--gold);border-color:var(--gold)}
+.character-layout{display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.5fr);gap:20px;margin-bottom:22px}
+.portrait-panel{text-align:center}.portrait-panel h2{font-size:22px}.character-art{width:165px;max-width:100%;height:190px;display:block;margin:auto}
+.portrait-panel label{font-size:12px;display:grid;gap:8px}.portrait-panel p{font-size:11px}.character-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;font-size:10px;color:var(--muted)}.character-stats strong{display:block;color:var(--gold);font-size:16px}
+.relic-section{margin-top:32px}.relic-section .info{font-size:11px}.relic-section h2 span{font:12px system-ui;color:var(--muted)}
+.strategy-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--border);font-size:11px}.strategy-help{margin-bottom:18px;font-size:11px;color:var(--muted)}.strategy-help summary{cursor:pointer;color:var(--gold)}
+.special-detail{padding:12px;border:1px solid #c9ac6955;border-radius:5px;color:var(--gold);font-size:11px}
+.combat-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:10px;color:var(--muted)}.combat-summary b{display:block;color:var(--text);font-size:13px;font-weight:500}
+.character-layout .upgrade-card{grid-template-columns:30px minmax(0,1fr)}.character-layout .upgrade-buttons{grid-column:2}.character-layout .upgrade-value{font-size:20px}
+@media(max-width:1050px){.character-layout{grid-template-columns:1fr}.portrait-panel{max-width:none}.character-art{height:140px}}
+@media(max-width:700px){nav{grid-template-columns:repeat(2,1fr)!important}.strategy-bar{flex-wrap:wrap}.cavern-tabs button{flex:1}.boss-roster .boss-choice{padding:12px}.boss-roster .boss-choice strong{font-size:14px}.boss-roster .boss-choice .rune{font-size:18px}}
+.boss-roster{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.boss-choice{display:flex;flex-direction:column;gap:6px;text-align:left;padding:17px;background:#151915;min-width:0}
+.boss-choice.chosen{border-color:var(--gold);background:#c9ac6910}
+.boss-choice.locked{background:#101310;color:#9b9e94}
+.boss-choice-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:8px;letter-spacing:1px}
+.boss-choice .rune{font-size:24px;color:var(--gold)}
+.boss-choice>strong{font-size:17px;font-weight:500}
+.boss-choice-name{font-family:Georgia,serif;font-size:13px;color:var(--muted)}
+.boss-choice-level{font-size:11px;margin-top:8px}
+.boss-choice-level>span{color:var(--muted);margin-left:8px}
+.boss-choice small{font-size:10px;color:var(--muted)}
+.unlock-track{height:3px;background:#34372e;width:100%;margin:5px 0;overflow:hidden}
+.unlock-track>span{display:block;height:100%;background:var(--gold)}
+.boss-item{text-align:center;color:var(--gold);font-size:12px;margin:0 0 24px}
+.item-card.unowned{opacity:.65}
+.battle-actions>button{flex:1}
+@media(max-width:850px){.boss-roster{grid-template-columns:repeat(2,minmax(0,1fr))}.boss-choice{padding:12px}.boss-choice-level>span{display:block;margin-left:0}}
+@media(max-width:380px){.boss-choice-name{font-size:11px}.boss-choice{padding:10px}.boss-choice-top{font-size:7px}}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 60% 25%,#20251b55,transparent 60%),var(--bg);color:var(--text);font:14px/1.6 system-ui,-apple-system,'Segoe UI',sans-serif}
+button,select,input{font:inherit}
+button,a,label{ -webkit-tap-highlight-color:transparent}
+button{cursor:pointer;transition:background .18s,transform .18s;border:1px solid var(--border);color:var(--text);background:#1b1f1a;border-radius:5px;padding:10px 16px}
+button:hover:not(:disabled){background:#2b3026;transform:translateY(-1px)}
+button:disabled{cursor:not-allowed;opacity:.4}
+button:focus-visible,a:focus-visible,select:focus-visible,.import-label:focus-within{outline:2px solid var(--gold);outline-offset:4px}
+.shell{max-width:1440px;margin:auto;padding:0 42px}
+header{min-height:116px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);gap:24px}
+.brand{color:var(--text);text-decoration:none;display:flex;gap:14px;align-items:center;font-size:22px;font-weight:700;letter-spacing:2px}
+.brand b,footer b{color:var(--gold)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:3px;margin-top:3px}
+.brand-mark{font-size:46px;color:var(--gold);font-weight:300}
+.header-stats{display:flex;gap:48px}
+.header-stats small{display:block;font-size:9px;letter-spacing:1.5px;color:var(--muted)}
+.header-stats strong{font-size:24px;font-weight:500;font-variant-numeric:tabular-nums}
+.gold{color:#e4c57e}
+.layout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:760px}
+aside{padding:34px 26px 30px 0;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.chapter{font-size:9px;letter-spacing:1.5px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:23px}
+.chapter span{color:#646c5d}
+nav{display:grid;gap:8px}
+.nav{border-color:transparent;background:transparent;display:flex;align-items:center;text-align:left;gap:12px;color:var(--muted);padding:12px}
+.nav span{flex:1}
+.nav i{font-style:normal;font-size:10px;opacity:.6}
+.nav.active{background:#c9ac6910;border-color:#c9ac6930;color:var(--gold)}
+.aside-note{margin-top:auto;padding-top:80px;color:var(--muted);font-size:9px;letter-spacing:1px}
+.dot{display:inline-block;width:6px;height:6px;background:var(--green);border-radius:50%;margin-right:7px;box-shadow:0 0 12px #98ac8355}
+blockquote{margin:18px 0;font-family:Georgia,serif;font-style:italic;font-size:14px;letter-spacing:0;color:#848b7b}
+.text-btn{padding:0;border:0;background:transparent;color:var(--muted);font-size:11px;text-align:left}
+main{min-width:0;padding:36px 0 40px 40px}
+.page{display:none}
+.page.active{display:block;animation:enter .25s ease}
+.eyebrow{font-size:9px;letter-spacing:2.1px;font-weight:600;color:var(--gold)}
+h1{font:32px/1.25 Georgia,serif;letter-spacing:-.5px;margin:10px 0}
+h2{font:28px/1.3 Georgia,serif;margin:12px 0}
+h3{margin:0;font-size:14px;font-weight:500}
+p{color:var(--muted);margin:8px 0}
+.page-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:27px}
+.page-title p{font-size:12px}
+.pill{font-size:9px;color:var(--muted);border:1px solid var(--border);border-radius:30px;padding:7px 12px;letter-spacing:1px;white-space:nowrap}
+.combat-card{position:relative;background:radial-gradient(ellipse at 50% 20%,#a08f4c12,transparent 55%),#141714;border:1px solid #444432;border-radius:8px;overflow:hidden;padding:20px 30px 16px}
+.arena-top{display:flex;justify-content:space-between;align-items:center}
+.speed{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:10px}
+select{background:#20241e;border:1px solid var(--border);border-radius:4px;color:var(--text);padding:4px 8px}
+.boss-intro{text-align:center;padding:22px 0 30px}
+.sigil{color:var(--gold);font-size:56px;line-height:1.5;margin:0 auto 18px;width:98px;height:98px;border:1px solid #c9ac6940;border-radius:50%;outline:1px solid #c9ac6915;outline-offset:8px;text-shadow:0 0 30px #c9ac6940;background:radial-gradient(#c9ac6915,transparent)}
+.boss-intro h2{margin:6px 0}
+.boss-intro p{font-size:11px}
+.fighters{display:grid;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr);align-items:center}
+.fighter-name{display:flex;justify-content:space-between;align-items:center;font-size:12px;gap:8px}
+.fighter-name small{font-size:8px;color:var(--muted);letter-spacing:1px}
+.tiny-rune{color:var(--green);margin-right:5px}
+.health-values{display:flex;justify-content:space-between;margin:18px 0 6px;font-size:9px;color:var(--muted)}
+.health-values strong{color:var(--text);font-weight:400;font-variant-numeric:tabular-nums}
+.health-track{height:7px;background:#292d27;border-radius:2px;overflow:hidden}
+.health-track>div{height:100%;width:100%;background:linear-gradient(90deg,#617a50,#acbb8e);transition:width .2s}
+.enemy>div{background:linear-gradient(90deg,#77473c,#bb7d60)}
+.stat-row{display:flex;gap:20px;font-size:11px;color:var(--muted);margin-top:12px}
+.stat-row b{color:var(--text);font-weight:500}
+.versus{text-align:center;font:italic 13px Georgia;color:#777c6c}
+.battle-actions{display:flex;gap:20px;justify-content:space-between;border-top:1px solid var(--border);margin-top:28px;padding-top:20px}
+.mode-switch{display:flex;background:#0e110e;padding:3px;border:1px solid var(--border);border-radius:5px}
+.mode-switch button{background:transparent;border:0;color:var(--muted);padding:8px 14px;font-size:11px}
+.mode-switch .selected{background:#2a2d24;color:var(--gold)}
+.primary{background:var(--gold);color:#191b15;border-color:var(--gold);font-weight:600;padding:12px 24px}
+.primary:hover:not(:disabled){background:#e0c481}
+.primary span{margin-left:45px}
+.reward-line{text-align:right;font-size:10px;color:var(--muted);padding-top:12px}
+.below-arena{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-top:18px}
+.panel{background:#141714;border:1px solid var(--border);border-radius:7px;padding:22px}
+.result-panel p{font-size:12px;color:var(--text)}
+.battle-log{font-size:10px;color:var(--muted);min-height:32px}
+.hint{display:flex;gap:16px;align-items:center}
+.hint>span{font-size:30px;color:var(--gold)}
+.hint p{font-size:11px}
+.subtitle{margin-bottom:28px}
+.upgrade-list{display:grid;gap:15px}
+.upgrade-card{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:20px}
+.upgrade-icon{color:var(--gold);font-size:30px;text-align:center}
+.upgrade-card h2{font:18px system-ui;margin:0}
+.upgrade-card small{font-size:10px;color:var(--muted)}
+.upgrade-value{color:var(--gold);font-size:22px}
+.upgrade-buttons{display:flex;gap:6px}
+.upgrade-buttons button{font-size:11px;padding:10px}
+.passive{margin-top:22px;display:flex;gap:30px;flex-wrap:wrap;color:var(--muted)}
+.passive strong{color:var(--gold);margin-left:8px}
+.passive p{width:100%;font-size:11px;margin:0}
+.info{font-size:12px;color:var(--muted);margin-bottom:20px}
+.inventory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.item-card .rune{font-size:32px;color:var(--gold)}
+.item-card h3{margin:10px 0 3px}
+.item-card p{font-size:11px}
+.item-card .bonus{color:var(--green)}
+.xp{height:3px;background:#303429;margin-top:16px}
+.xp>div{height:100%;background:var(--gold)}
+.empty{padding:65px 30px;text-align:center;grid-column:1/-1}
+.empty span{font-size:50px;color:var(--gold)}
+.afk-panel{text-align:center;max-width:760px;padding:36px}
+.afk-symbol{font-size:72px;color:var(--gold)}
+.afk-panel>p{max-width:480px;margin:15px auto}
+.afk-rates{display:flex;justify-content:center;gap:50px;padding:30px 0}
+.afk-rates strong{font-size:25px;color:var(--gold);display:block}
+.afk-rates small{font-size:8px;letter-spacing:1px;color:var(--muted)}
+.fineprint{font-size:11px!important;color:var(--muted)}
+.settings-panel{max-width:700px}
+.settings-panel>p{margin:18px 0}
+.settings-panel h2{margin-top:0}
+.secondary{display:inline-block;background:#22271e;border:1px solid var(--border);padding:12px 18px;border-radius:5px;cursor:pointer}
+.import-label{position:relative;margin:8px}
+.import-label input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+footer{padding:20px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;color:var(--muted);font-size:9px;letter-spacing:1px}
+.muted{color:var(--muted)}
+#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#333b2b;border:1px solid #6c765b;padding:12px 24px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:3;max-width:90%;text-align:center}
+#toast.show{opacity:1}
+.hit{animation:hit .25s ease}
+.won{animation:glow .7s ease}
+@keyframes enter{from{opacity:0;transform:translateY(5px)}
+to{opacity:1;transform:none}
+}
+@keyframes hit{50%{opacity:.5;transform:translateX(3px)}
+}
+@keyframes glow{50%{box-shadow:0 0 30px #c9ac6933}
+}
+@media(min-width:1500px){.shell{padding:0 60px}
+main{padding-left:50px}
+.combat-card{padding:24px 36px}
+.boss-intro{padding:32px 0 40px}
+}
+@media(max-width:1050px){.shell{padding:0 24px}
+.layout{grid-template-columns:170px 1fr}
+aside{padding-right:16px}
+main{padding-left:24px}
+.header-stats{gap:24px}
+.pill{display:none}
+.fighter-name{flex-wrap:wrap}
+.upgrade-card{gap:10px;grid-template-columns:32px 1fr}
+.upgrade-buttons{grid-column:2}
+.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.battle-actions{gap:10px}
+.primary span{margin-left:10px}
+.combat-card{padding:20px}
+.stat-row{gap:12px}
+}
+@media(max-width:700px){.shell{padding:0 16px}
+header{flex-wrap:wrap;gap:16px;padding:20px 0}
+.brand{font-size:20px}
+.brand-mark{font-size:34px}
+.header-stats{width:100%;justify-content:space-between;gap:12px}
+.header-stats strong{font-size:21px}
+.header-stats small{font-size:8px}
+.layout{display:block;min-height:0}
+aside{border:0;padding:18px 0 0;display:block}
+.chapter,.aside-note{display:none}
+nav{grid-template-columns:repeat(4,1fr);gap:4px}
+.nav{flex-direction:column;gap:3px;padding:8px 2px;font-size:16px}
+.nav span{font-size:10px}
+.nav i{display:none}
+main{padding:28px 0}
+.page-title{margin-bottom:22px}
+h1{font-size:28px}
+.combat-card{padding:16px}
+.boss-intro{padding:28px 0}
+.boss-intro h2{font-size:25px}
+.fighters{grid-template-columns:1fr;gap:14px}
+.versus{display:none}
+.fighter-name{flex-wrap:nowrap}
+.health-values{margin-top:10px}
+.stat-row{margin-top:6px}
+.battle-actions{flex-direction:column;margin-top:20px;padding-top:16px}
+.mode-switch button{flex:1}
+.reward-line{text-align:center}
+.below-arena{grid-template-columns:1fr}
+.hint{padding:18px}
+.inventory-grid{grid-template-columns:1fr 1fr;gap:10px}
+.item-card{padding:16px}
+.afk-panel{padding:24px 18px}
+.afk-rates{gap:20px}
+.afk-rates small{font-size:7px}
+footer{flex-wrap:wrap;gap:10px}
+footer>span:last-child{display:none}
+.settings-panel .primary,.import-label{width:100%;margin:5px 0;text-align:center}
+.passive{gap:12px}
+.panel{padding:18px}
+.upgrade-card{padding:20px 12px}
+.upgrade-buttons{flex-wrap:wrap}
+#more-items{margin-top:20px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+
+</style></head>
+<body>
+<div class="shell">
+<header><a class="brand" href="#"><span class="brand-mark">◈</span><span>CAVERNA<b>BURX</b><small>EL DESCENSO NO TIENE FIN</small></span></a><div class="header-stats"><div><small>ORO DISPONIBLE</small><strong class="gold" id="gold">0</strong></div><div><small>MÁX. NIVEL VENCIDO</small><strong id="highest">—</strong></div><div><small>PODER TOTAL</small><strong id="power">0</strong></div></div></header>
+<div class="layout"><aside><div class="chapter">TU DESCENSO <span>01 / ∞</span></div><nav aria-label="Secciones principales"><button class="nav active" data-tab="cavern">◇ <span>Caverna</span><i>01</i></button><button class="nav" data-tab="character">♙ <span>Personaje</span><i>02</i></button></nav><div class="aside-note"><span class="dot"></span> VERSIÓN 1.3<blockquote>Algo espera en las profundidades.<br>Haz que te tema.</blockquote><button class="text-btn" data-tab="settings">Partida y copias de seguridad ↗</button></div></aside>
+<main><section id="cavern" class="page active"><div class="cavern-tabs" role="group" aria-label="Caverna"><button data-subtab="combat" class="selected">Guardianes</button><button data-subtab="afk">Expedición AFK</button></div><section id="combat" class="cavern-pane"><div class="page-title"><div><div class="eyebrow">LA CAVERNA / COMBATE</div><h1>Un paso hacia el abismo.</h1><p>Vence. Crece. Desciende.</p></div><span class="pill">6 GUARDIANES · ∞ NIVELES</span></div>
+<div id="migration-notice" class="panel info" role="status" hidden></div><div id="boss-roster" class="boss-roster" aria-label="Guardianes"></div><div class="combat-card"><div class="arena-top"><span class="eyebrow" id="encounter-type">PRÓXIMO DESAFÍO</span><label class="speed">Velocidad <select id="speed" aria-label="Velocidad de combate"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></label></div>
+<div class="boss-intro"><div class="sigil" id="boss-rune">◈</div><span class="eyebrow" id="boss-level">BOSS 1</span><h2 id="boss-name">El Vigía de Ceniza</h2><p id="boss-wins">Una presencia despierta en la oscuridad.</p></div>
+<p id="boss-item" class="boss-item"></p><p id="unlock-detail" class="panel info" hidden></p><div class="strategy-bar"><label>Estilo <select id="combat-style"><option value="balanced">Equilibrado</option><option value="aggressive">Ofensivo</option><option value="defensive">Defensivo</option></select></label><span id="ultimate-hint"></span></div><p id="special-detail" class="special-detail" hidden></p><div class="fighters"><article id="player-fighter"><div class="fighter-name"><span><span class="tiny-rune">◇</span> Tú, el errante</span><small id="player-hit">PREPARADO</small></div><div class="health-values"><span>VIDA</span><strong id="player-hp"></strong></div><div class="health-track"><div id="player-bar"></div></div><div class="ultimate-label"><span>Habilidad definitiva</span><strong id="ultimate-percent">0%</strong></div><div class="ultimate-track" role="progressbar" aria-label="Carga de habilidad definitiva" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ultimate-track"><div id="ultimate-bar"></div></div><div id="ultimate-state" class="ultimate-state" role="status"></div><div class="stat-row" id="player-stats"></div></article><span class="versus">VS</span><article id="boss-fighter"><div class="fighter-name"><span>Guardián de la profundidad</span><small id="boss-hit">EN GUARDIA</small></div><div class="health-values"><span>VIDA</span><strong id="boss-hp"></strong></div><div class="health-track enemy"><div id="boss-bar"></div></div><div class="stat-row" id="boss-stats"></div></article></div>
+<div class="battle-actions"><button id="fight" class="primary">DESAFIAR</button><button id="repeat" class="secondary">REPETIR</button></div><div class="reward-line" id="reward-preview"></div></div>
+<div class="below-arena"><div class="panel result-panel"><div class="eyebrow">ECO DEL COMBATE</div><p id="result" role="status" aria-live="polite">Tu historia comienza con el primer guardián.</p><div id="battle-log" class="battle-log"></div><div id="combat-summary" class="combat-summary" hidden></div><div id="combat-advice" class="combat-advice" hidden><h3>Consejo de combate</h3><strong id="advice-diagnosis"></strong><p id="advice-evidence"></p><p id="advice-recommendation" role="status"></p></div></div><div class="panel hint"><span>◈</span><div><h3>El poder permanece.</h3><p>Seis guardianes, seis reliquias. Cada nivel nuevo mejora su único objeto.</p></div></div></div></section><section id="afk" class="cavern-pane" hidden><div class="eyebrow">EXPEDICIONES / AFK</div><h1>La caverna nunca duerme.</h1><p class="subtitle">Combates continuos mientras esta página esté abierta.</p><div class="panel afk-panel"><div class="afk-symbol">☾</div><h2>El juramento del errante</h2><p>Avanza con el guardián seleccionado. Si caes, repite el último nivel superado de ese mismo guardián.</p><div class="afk-rates"><div><strong>5%</strong><small>DEL ORO NORMAL</small></div><div><strong>0,5%</strong><small>COSTE POR COMBATE</small></div><div><strong>0 h</strong><small>PRODUCCIÓN OFFLINE</small></div></div><label>Modo <select id="afk-mode"><option value="progress">Desafiar</option><option value="repeat">Repetir</option></select></label><p id="afk-target"></p><p id="afk-status" role="status"></p><button id="afk-toggle" class="primary"></button><p class="fineprint">El coste se descuenta al empezar, incluso si pierdes. Detener AFK permite terminar el combate en curso.</p></div></section></section><section id="character" class="page"><div class="eyebrow">PERSONAJE / PREPARACIÓN</div><h1>Forja tu próximo descenso.</h1><p class="subtitle">Invierte tu oro. Cada nivel cuenta.</p><div class="character-layout"><div class="panel portrait-panel"><div class="eyebrow">EL ERRANTE</div><svg class="character-art" viewBox="0 0 200 220" role="img" aria-label="Silueta de un errante encapuchado"><circle cx="100" cy="95" r="66" fill="none" stroke="#c9ac6933"/><path d="M100 20 145 80 136 110 161 195 39 195 64 110 55 80Z" fill="#262e25" stroke="#7c805c"/><path d="M100 28 134 81 100 69 66 81Z" fill="#3c4432"/><path d="M69 83 100 73 131 83 119 116 81 116Z" fill="#101510"/><path d="m84 90 10 2m12 0 10-2" stroke="#c9ac69" stroke-width="3"/><path d="m64 117 36 68 36-68M100 122v74" fill="none" stroke="#6d7453"/><path d="M158 78v120m-14-99h28" stroke="#c9ac69" stroke-width="4"/><path d="M26 201h148" stroke="#c9ac6944"/></svg><h2>Tu legado, tu estrategia.</h2><label>Estilo de combate <select id="style"><option value="balanced">Equilibrado</option><option value="aggressive">Ofensivo</option><option value="defensive">Defensivo</option></select></label><p id="style-description"></p><div id="character-stats" class="character-stats"></div></div><div id="upgrade-list" class="upgrade-list"></div></div><div id="special-stats" class="panel passive"><span>✧ Crítico <strong>12%</strong></span><span>Daño crítico <strong>175%</strong></span><p>Valores base. Sin mejoras de oro en esta versión.</p></div><section id="inventory" class="relic-section"><div class="eyebrow">EL LEGADO / INVENTARIO</div><h2>Reliquias pasivas <span id="item-count"></span></h2><p class="subtitle">Seis reliquias permanentes. Sin equipamiento ni objetos duplicados.</p><div class="panel info">Superar un nivel nuevo mejora la reliquia de ese guardián en un nivel. Repetir solo da oro: sin niveles ni experiencia.</div><div id="inventory-list" class="inventory-grid"></div><p id="legacy-stats" class="panel info" hidden></p></section></section><section id="settings" class="page"><div class="eyebrow">TU PARTIDA / ESQUEMA 2</div><h1>Conserva tu legado.</h1><p class="subtitle">Guardado automático provisional en este navegador.</p><div class="panel settings-panel"><h2>Copias de seguridad</h2><p>Exporta tu progreso antes de borrar los datos del navegador o cambiar de dispositivo. El guardado local no es una cuenta ni una copia en la nube.</p><button id="export-legacy" class="secondary" hidden>Descargar guardado original</button><button id="export" class="primary">Exportar partida JSON ↓</button><label class="secondary import-label">Importar partida JSON ↑<input id="import" type="file" accept=".json,application/json"></label><p id="save-status" role="status">Guardado automático activo.</p><p class="fineprint">Importar reemplaza la partida tras confirmar. Los combates en curso no se guardan. Al volver, AFK continúa si estaba activo; no se calcula tiempo ausente.</p></div></section></main></div><footer><span>CAVERNA<b>BURX</b> <span class="muted">/ v1.3</span></span><span id="footer-status"><span class="dot"></span> Progreso local · guardado automático</span><span>UN DESCENSO SIN FIN</span></footer></div><div id="toast" role="status"></div><script type="module">function createPortableWorker(){const url=URL.createObjectURL(new Blob(["const modules=Object.create(null);\nmodules[\"config.js\"]=(()=>{\n// Central balance configuration. Advanced curves are intentionally much steeper.\r\nconst initial = (id,name,item,rune,base,growth,ability,description) => ({\r\n  id,name,item,rune,label:{attack:'Ataque',defense:'Defensa',health:'Vida'}[id],\r\n  base,growth,anchor:1,rewardBase:28,rewardGrowth:1.30,ability,description\r\n});\r\nconst CONFIG = {\r\n  version:2,initialGold:35,criticalChance:.12,criticalDamage:1.75,\r\n  upgrades:{\r\n    attack:{name:'Ataque',icon:'⚔',base:12,growth:1.15,cost:15,costGrowth:1.18},\r\n    health:{name:'Vida',icon:'♡',base:110,growth:1.15,cost:12,costGrowth:1.18},\r\n    defense:{name:'Defensa',icon:'◇',base:3,growth:1.15,cost:10,costGrowth:1.18}\r\n  },\r\n  combat:{minimumDamage:.08,maxTurns:2000},\r\n  styles:{\r\n    balanced:{name:'Equilibrado',attack:1,health:1,defense:1,description:'Sin modificadores'},\r\n    aggressive:{name:'Ofensivo',attack:1.25,health:.85,defense:.8,description:'+25% ataque · −15% vida · −20% defensa'},\r\n    defensive:{name:'Defensivo',attack:.85,health:1.2,defense:1.35,description:'−15% ataque · +20% vida · +35% defensa'}\r\n  },\r\n  caverns:{attack:'Fosa de la Furia',defense:'Bastión de Hierro',health:'Santuario de la Vitalidad',critical:'Umbral del Verdugo',penetration:'Cripta del Perforador',vampirism:'Altar Carmesí'},\r\n  ultimates:{\r\n    enabled:true,durationActions:6,\r\n    aggressive:{name:'Furia Desatada',chargeAttacks:3,critPoints:.35,critRelative:0,attack:1,mitigationStrength:0},\r\n    defensive:{name:'Bastión Inquebrantable',chargeAttacks:3,critPoints:0,critRelative:0,attack:1,mitigationStrength:.5},\r\n    balanced:{name:'Armonía del Guerrero',chargeAttacks:3,critPoints:0,critRelative:0,attack:1.12,mitigationStrength:.2}\r\n  },\r\n  analysis:{seeds:12,upgradeCount:3,maxActions:2000},\r\n  milestones:{\r\n    enabled:true,\r\n    attack:{interval:100,health:1.7,attack:1.4,defense:1.2,gold:2,ability:{enrageEvery:3,enrageMultiplier:1.5},description:'Cada tercer ataque inflige ×1,5 daño'},\r\n    defense:{interval:100,health:1.8,attack:1.25,defense:1.5,gold:2,ability:{resistance:.3},description:'Resistencia aumentada al 30%'},\r\n    health:{interval:100,health:2,attack:1.25,defense:1.2,gold:2,ability:{regeneration:.025},description:'Regenera 2,5% por turno propio'},\r\n    critical:{interval:50,health:1.7,attack:1.35,defense:1.2,gold:2,ability:{criticalChance:.4,criticalDamage:2.3},description:'40% de crítico · daño crítico ×2,3'},\r\n    penetration:{interval:25,health:1.7,attack:1.35,defense:1.3,gold:2,ability:{penetration:.8},description:'Ignora el 80% de defensa'},\r\n    vampirism:{interval:10,health:1.8,attack:1.35,defense:1.25,gold:2,ability:{vampirism:.3},description:'Recupera el 30% del daño infligido'}\r\n  },\r\n  bossScaling:{anchorGrowth:1.26},\r\n  items:{statPerLevel:.025,criticalPerLevel:.025,penetrationPerLevel:.005,vampirismPerLevel:.004},\r\n  economy:{repeatRate:.8,anchorRewardGrowth:1.30},\r\n  afk:{unlock:200,rewardRate:.05,feeRate:.005,delay:1200},\r\n  bosses:{\r\n    attack:initial('attack','El Vigía de Ceniza','Ojo de ceniza','◈',\r\n      {health:48,attack:12,defense:1},{health:1.25,attack:1.38,defense:1.18},{},'Ofensiva explosiva · vida y armadura más lentas'),\r\n    defense:initial('defense','El Caballero Hueco','Sello del vacío','♜',\r\n      {health:80,attack:4,defense:12},{health:1.30,attack:1.30,defense:1.42},{resistance:.25},'Armadura creciente · resistencia 25% · combate de desgaste'),\r\n    health:initial('health','La Madre de Piedra','Corazón de basalto','⬡',\r\n      {health:100,attack:5,defense:2},{health:1.40,attack:1.19,defense:1.12},{regeneration:.005},'Vida creciente · regenera 0,5% por turno propio'),\r\n    critical:{id:'critical',label:'Crítico',name:'La Tejedora de Ecos',item:'Hilo del abismo',rune:'✧',\r\n      unlock:{any:50,all:25},anchor:55,base:{health:60,attack:8,defense:1},\r\n      growth:{health:2.4,attack:2.4,defense:2.3},rewardBase:28,rewardGrowth:2.8,\r\n      ability:{criticalChance:.3,criticalDamage:2},description:'30% de crítico · golpes al 200% · defensa baja'},\r\n    penetration:{id:'penetration',label:'Penetración',name:'El Devorador de Luz',item:'Ascua perforante',rune:'☼',\r\n      unlock:{any:150,all:75},anchor:165,base:{health:65,attack:9,defense:3},\r\n      growth:{health:16.3,attack:16.3,defense:15},rewardBase:28,rewardGrowth:27,\r\n      ability:{penetration:.65},description:'Ignora el 65% de tu defensa'},\r\n    vampirism:{id:'vampirism',label:'Vampirismo',name:'El Rey Sepultado',item:'Corona carmesí',rune:'♛',\r\n      unlock:{any:350,all:175},anchor:380,base:{health:75,attack:10,defense:3},\r\n      growth:{health:100000,attack:100000,defense:90000},rewardBase:28,rewardGrowth:800000,\r\n      ability:{vampirism:.2},description:'Recupera el 20% del daño real que inflige'}\r\n  }\r\n};\r\nconst BOSS_IDS=Object.keys(CONFIG.bosses);\r\nconst INITIAL_IDS=['attack','defense','health'];\r\n\nreturn {CONFIG,BOSS_IDS,INITIAL_IDS};\n})();\nmodules[\"numbers.js\"]=(()=>{\n// Positive numbers in log10 space: exponential growth without Infinity at 1e308.\nclass Huge {\n  constructor(log = -Infinity) { this.log = log; }\n  static of(n) { return new Huge(n > 0 ? Math.log10(n) : -Infinity); }\n  static read(n) { return new Huge(n === null ? -Infinity : n); }\n  add(b) { const hi = Math.max(this.log,b.log), lo = Math.min(this.log,b.log); return hi === -Infinity ? new Huge() : new Huge(hi + Math.log10(1 + 10 ** (lo-hi))); }\n  sub(b) { if (this.log <= b.log) return new Huge(); return new Huge(this.log + Math.log10(-Math.expm1((b.log-this.log)*Math.LN10))); }\n  mul(n) { return new Huge(this.log + Math.log10(n)); }\n  times(b) { return new Huge(this.log + b.log); }\n  gte(b) { return this.log + 1e-12 >= b.log; }\n  ratio(b) { return Math.min(1, 10 ** (this.log-b.log)) || 0; }\n  toJSON() { return this.log === -Infinity ? null : this.log; }\n  format() { if(this.log === -Infinity) return '0'; if(this.log < 6) return (10 ** this.log).toLocaleString('es-ES',{maximumFractionDigits:this.log < 2 ? 1 : 0}); const e=Math.floor(this.log); return `${(10 ** (this.log-e)).toFixed(2).replace('.',',')}e${e.toLocaleString('es-ES')}`; }\n}\nconst scaled = (base,growth,level) => new Huge(Math.log10(base)+Math.log10(growth)*level);\n\nreturn {Huge,scaled};\n})();\nmodules[\"items.js\"]=(()=>{\nconst {CONFIG:C}=modules[\"config.js\"];\nfunction awardItem(state,id) {\n  state.items[id]={level:state.bosses[id].highest};\n  return state.items[id];\n}\nfunction bonusLog(state,stat) {\n  return Math.log10(1+C.items.statPerLevel*(state.items[stat]?.level||0))+(state.legacyBonuses?.[stat]||0);\n}\nfunction specialStats(state) {\n  const penetration=C.items.penetrationPerLevel*(state.items.penetration?.level||0);\n  const vampirism=C.items.vampirismPerLevel*(state.items.vampirism?.level||0);\n  return {criticalChance:C.criticalChance,\n    criticalDamage:C.criticalDamage+C.items.criticalPerLevel*(state.items.critical?.level||0),\n    penetration:penetration/(1+penetration),vampirism:vampirism/(1+vampirism)};\n}\nfunction itemDescription(state,id) {\n  const level=state.items[id]?.level||0;\n  const percent=n=>(n*100).toLocaleString('es-ES',{maximumFractionDigits:2})+'%';\n  if(id in C.upgrades)return `+${percent(C.items.statPerLevel*level)} ${C.upgrades[id].name.toLowerCase()}`;\n  if(id==='critical')return `+${(C.items.criticalPerLevel*level*100).toLocaleString('es-ES')} puntos de daño crítico`;\n  return `${percent(specialStats(state)[id])} ${id==='penetration'?'defensa ignorada':'robo de vida'}`;\n}\n\nreturn {awardItem,bonusLog,specialStats,itemDescription};\n})();\nmodules[\"upgrades.js\"]=(()=>{\nconst { CONFIG:C }=modules[\"config.js\"];\nconst { Huge,scaled }=modules[\"numbers.js\"];\nconst { bonusLog,specialStats }=modules[\"items.js\"];\nfunction stats(state) {\n  return {...Object.fromEntries(Object.entries(C.upgrades).map(([key,c])=>[key,new Huge(scaled(c.base,c.growth,state.levels[key]).log+bonusLog(state,key))])),...specialStats(state)};\n}\nfunction cost(state,key,count=1) {\n  const c=C.upgrades[key], first=scaled(c.cost,c.costGrowth,state.levels[key]);\n  if(count===1) return first;\n  const x=count*Math.log(c.costGrowth);\n  const logSum=(x>700 ? x : Math.log(Math.expm1(x)))-Math.log(c.costGrowth-1);\n  return new Huge(first.log+logSum/Math.LN10);\n}\nfunction maxBuy(state,key) {\n  const c=C.upgrades[key], delta=state.gold.log-cost(state,key).log+Math.log10(c.costGrowth-1);\n  let n=Math.floor((delta>15 ? delta*Math.LN10 : Math.log1p(10**delta))/Math.log(c.costGrowth));\n  n=Math.max(0,Math.min(n,Number.MAX_SAFE_INTEGER-state.levels[key]));\n  if(n>0&&!state.gold.gte(cost(state,key,n))) n--;\n  return n;\n}\nfunction buy(state,key,count) {\n  if(!C.upgrades[key]) return false;\n  const n=count==='max'?maxBuy(state,key):count;\n  if(!Number.isSafeInteger(n)||n<1||!Number.isSafeInteger(state.levels[key]+n)) return false;\n  const price=cost(state,key,n); if(!state.gold.gte(price)) return false;\n  state.gold=state.gold.sub(price);state.levels[key]+=n;return true;\n}\n\nreturn {stats,cost,maxBuy,buy};\n})();\nmodules[\"bosses.js\"]=(()=>{\nconst {CONFIG:C,INITIAL_IDS,BOSS_IDS}=modules[\"config.js\"];\nconst {scaled}=modules[\"numbers.js\"];\nfunction unlockProgress(state,id) {\n  const requirement=C.bosses[id].unlock;\n  const levels=INITIAL_IDS.map(key=>state.bosses[key].highest);\n  return {any:Math.max(...levels),all:Math.min(...levels),requirement};\n}\nfunction checkUnlocks(state) {\n  const unlocked=[];\n  for(const id of BOSS_IDS){\n    const {any,all,requirement}=unlockProgress(state,id);\n    if(!state.bosses[id].unlocked&&(!requirement||(any>=requirement.any&&all>=requirement.all))){\n      state.bosses[id].unlocked=true;unlocked.push(id);\n    }\n  }\n  return unlocked;\n}\nfunction getBoss(state,id,level=state.bosses[id].next,{specials=true}={}) {\n  const c=C.bosses[id];\n  if(!c||!Number.isSafeInteger(level)||level<1)throw Error('Nivel de boss no válido.');\n  const stat=key=>scaled(c.base[key],C.bossScaling.anchorGrowth,c.anchor-1).times(scaled(1,c.growth[key],level-1));\n  const special=specials&&C.milestones.enabled&&level%C.milestones[id].interval===0;\n  const m=C.milestones[id];\n  return {...c,level,special,ability:{...c.ability,...(special?m.ability:{})},\n    health:stat('health').mul(special?m.health:1),attack:stat('attack').mul(special?m.attack:1),defense:stat('defense').mul(special?m.defense:1),\n    reward:scaled(c.rewardBase,C.economy.anchorRewardGrowth,c.anchor-1).times(scaled(1,c.rewardGrowth,level-1))};\n}\nfunction rewardFor(boss,mode,automatic=false,specialEligible=true) {\n  return boss.reward.mul((mode==='repeat'?C.economy.repeatRate:1)*(automatic?C.afk.rewardRate:1)*(boss.special&&mode==='progress'&&specialEligible?C.milestones[boss.id].gold:1));\n}\n\nreturn {unlockProgress,checkUnlocks,getBoss,rewardFor};\n})();\nmodules[\"strategy.js\"]=(()=>{\nconst {CONFIG:C}=modules[\"config.js\"];\r\nconst {Huge}=modules[\"numbers.js\"];\r\nfunction applyStyle(player,style='balanced') {\r\n  const c=C.styles[style]||C.styles.balanced;\r\n  return {...player,attack:player.attack.mul(c.attack),health:player.health.mul(c.health),defense:player.defense.mul(c.defense)};\r\n}\r\nfunction newUltimate(){return {charge:0,remaining:0,activations:0,activeAttacks:0,activeResponses:0};}\r\nfunction ultimateEffects(f){\r\n  const c=C.ultimates[f.style],active=C.ultimates.enabled&&f.ultimate.remaining>0;\r\n  return {active,attack:active?c.attack:1,\r\n    criticalChance:Math.min(1,Math.max(0,f.player.criticalChance*(active?1+c.critRelative:1)+(active?c.critPoints:0))),\r\n    damageTaken:active?1/(1+c.mitigationStrength):1};\r\n}\r\n// Six subsequent actions = three enemy responses and three protagonist attacks.\r\n// Charge pauses while active; the triggering attack itself is not empowered.\r\nfunction advanceUltimate(f,playerTurn,wasActive){\r\n  const u=f.ultimate;if(!C.ultimates.enabled)return false;\r\n  if(wasActive){u.remaining--;if(playerTurn)u.activeAttacks++;else u.activeResponses++;return false;}\r\n  if(!playerTurn||f.bossHP.log===-Infinity||f.playerHP.log===-Infinity)return false;\r\n  u.charge++;\r\n  if(u.charge<C.ultimates[f.style].chargeAttacks)return false;\r\n  u.charge=0;u.remaining=C.ultimates.durationActions;u.activations++;return true;\r\n}\r\nfunction chargePercent(f){return f.done?0:Math.min(100,100*f.ultimate.charge/C.ultimates[f.style].chargeAttacks);}\r\nfunction newSummary(){return {dealt:new Huge(),received:new Huge(),enemyRaw:new Huge(),enemyBlocked:new Huge(),playerRaw:new Huge(),playerBlocked:new Huge(),enemyHealing:new Huge(),playerHealing:new Huge(),ultimatePrevented:new Huge(),enemyResisted:new Huge(),playerAttacks:0,enemyAttacks:0,playerCrits:0,enemyCrits:0,expectedCrits:0,ultimateDamage:new Huge()};}\r\nfunction armorPercentage(blocked,raw){return raw.log===-Infinity?null:100*blocked.ratio(raw);}\r\n\nreturn {applyStyle,newUltimate,ultimateEffects,advanceUltimate,chargePercent,newSummary,armorPercentage};\n})();\nmodules[\"combat.js\"]=(()=>{\nconst {CONFIG:C}=modules[\"config.js\"];\nconst {Huge}=modules[\"numbers.js\"];\nconst {stats}=modules[\"upgrades.js\"];\nconst {getBoss,rewardFor,checkUnlocks}=modules[\"bosses.js\"];\nconst {awardItem}=modules[\"items.js\"];\nconst {applyStyle,newUltimate,ultimateEffects,advanceUltimate,newSummary}=modules[\"strategy.js\"];\nfunction damage(attack,defense,penetration=0,resistance=0) {\n  const floor=attack.mul(C.combat.minimumDamage),d=attack.sub(defense.mul(1-penetration));\n  return (d.gte(floor)?d:floor).mul(1-resistance);\n}\nfunction min(a,b){return a.log<b.log?a:b;}\nfunction createEncounter(basePlayer,boss,style='balanced',options={}){\n  const player=applyStyle(basePlayer,style);\n  return {boss,basePlayer:{...basePlayer},player,style,playerHP:player.health,bossHP:boss.health,\n    turn:0,done:false,log:[],ultimate:newUltimate(),summary:newSummary(),...options};\n}\nfunction startCombat(state,id,mode='progress',automatic=false) {\n  const progress=state.bosses[id];\n  if(state.pending||!progress?.unlocked||!['progress','repeat'].includes(mode))return null;\n  if(mode==='repeat'&&!progress.highest)return null;\n  const level=mode==='repeat'?progress.highest:progress.next;\n  if(!Number.isSafeInteger(level+1)||!Number.isSafeInteger(state.combatSeq+1))return null;\n  const boss=getBoss(state,id,level),fee=boss.reward.mul(C.afk.feeRate);\n  if(automatic){if(!state.afk.unlocked||!state.gold.gte(fee))return null;state.gold=state.gold.sub(fee);}\n  const token=++state.combatSeq;state.pending={token,id,level,mode,automatic};\n  return createEncounter(stats(state),boss,state.style,{token,automatic,mode,upgradeLevels:{...state.levels},startingGold:state.gold,hasVictory:Object.values(state.bosses).some(b=>b.highest>0)});\n}\nfunction finish(state,fight,won){\n  if(!state){fight.done=true;fight.won=won;fight.ultimate.remaining=0;fight.ultimate.charge=0;return;}\n  if(state.pending?.token!==fight.token||state.pending.id!==fight.boss.id)return;\n  fight.done=true;fight.won=won;state.pending=null;fight.ultimate.remaining=0;fight.ultimate.charge=0;\n  if(won){\n    const progress=state.bosses[fight.boss.id];\n    if(fight.mode==='progress'&&progress.next!==fight.boss.level)return;\n    const m=state.milestones[fight.boss.id];\n    const eligible=fight.mode==='progress'&&fight.boss.special&&fight.boss.level>m.legacyThrough&&!m.claimed.includes(fight.boss.level);\n    fight.reward=rewardFor(fight.boss,fight.mode,fight.automatic,eligible);\n    fight.milestoneClaimed=eligible;\n    if(eligible)m.claimed.push(fight.boss.level);\n    state.gold=state.gold.add(fight.reward);progress.wins++;\n    if(fight.mode==='progress'){\n      progress.highest=fight.boss.level;progress.next=progress.highest+1;\n      fight.item=awardItem(state,fight.boss.id);fight.unlocked=checkUnlocks(state);\n    }else progress.repeats++;\n  }\n  if(fight.automatic&&!won){\n    if(fight.mode==='progress'&&state.bosses[fight.boss.id].highest)state.afk.mode='repeat';\n    else state.afk.active=false;\n  }\n}\nfunction stepCombat(state,fight,rng=Math.random) {\n  if(fight.done||(state&&state.pending?.token!==fight.token))return null;\n  const playerTurn=fight.turn%2===0,a={...fight.boss.ability};\n  const effects=ultimateEffects(fight);\n  const critical=rng()<(playerTurn?effects.criticalChance:(a.criticalChance||0));\n  const crit=playerTurn?fight.player.criticalDamage:(a.criticalDamage||1);\n  const enraged=!playerTurn&&a.enrageEvery&&(Math.floor(fight.turn/2)+1)%a.enrageEvery===0;\n  const attack=playerTurn?fight.player.attack.mul(effects.attack):fight.boss.attack.mul(enraged?a.enrageMultiplier:1);\n  const defense=playerTurn?fight.boss.defense:fight.player.defense;\n  const penetration=playerTurn?fight.player.penetration:(a.penetration||0);\n  const raw=attack.mul(critical?crit:1);\n  const afterArmor=damage(attack,defense,penetration).mul(critical?crit:1);\n  const hit=afterArmor.mul(playerTurn?(1-(a.resistance||0)):effects.damageTaken);\n  const actual=min(hit,playerTurn?fight.bossHP:fight.playerHP);\n  const armorBlocked=raw.sub(afterArmor),summary=fight.summary;\n  if(playerTurn){summary.dealt=summary.dealt.add(actual);summary.enemyRaw=summary.enemyRaw.add(raw);summary.enemyBlocked=summary.enemyBlocked.add(armorBlocked);}\n  else{summary.received=summary.received.add(actual);summary.playerRaw=summary.playerRaw.add(raw);summary.playerBlocked=summary.playerBlocked.add(armorBlocked);}\n  if(playerTurn){summary.playerAttacks++;summary.playerCrits+=Number(critical);summary.expectedCrits+=effects.criticalChance;summary.enemyResisted=summary.enemyResisted.add(afterArmor.sub(hit));if(effects.active)summary.ultimateDamage=summary.ultimateDamage.add(actual);}\n  else{summary.enemyAttacks++;summary.enemyCrits+=Number(critical);summary.ultimatePrevented=summary.ultimatePrevented.add(afterArmor.sub(hit));}\n  let healed=new Huge(),potentialHeal=new Huge(),missingBeforeHeal=new Huge();\n  if(playerTurn){\n    fight.bossHP=fight.bossHP.sub(hit);\n    healed=min(fight.player.health.sub(fight.playerHP),actual.mul(fight.player.vampirism));\n    fight.playerHP=fight.playerHP.add(healed);\n  }else{\n    fight.playerHP=fight.playerHP.sub(hit);\n    potentialHeal=actual.mul(a.vampirism||0).add(fight.boss.health.mul(a.regeneration||0));\n    missingBeforeHeal=fight.boss.health.sub(fight.bossHP);\n    healed=min(missingBeforeHeal,potentialHeal);\n    fight.bossHP=fight.bossHP.add(healed);\n  }\n  if(playerTurn)summary.playerHealing=summary.playerHealing.add(healed);else summary.enemyHealing=summary.enemyHealing.add(healed);\n  const event={playerTurn,critical,hit:actual,healed,raw,afterArmor};\n  event.ultimateActivated=advanceUltimate(fight,playerTurn,effects.active);\n  fight.turn++;\n  if(fight.bossHP.log===-Infinity||fight.playerHP.log===-Infinity)finish(state,fight,fight.bossHP.log===-Infinity);\n  if(fight.turn>=C.combat.maxTurns&&!fight.done){fight.timeout=true;finish(state,fight,false);}\n  return event;\n}\nfunction unlockAFK(state){const price=Huge.of(C.afk.unlock);if(state.afk.unlocked||!state.gold.gte(price))return false;state.gold=state.gold.sub(price);state.afk.unlocked=true;return true;}\n\nreturn {damage,createEncounter,startCombat,stepCombat,unlockAFK};\n})();\nmodules[\"advice.js\"]=(()=>{\nconst {CONFIG:C}=modules[\"config.js\"];\nconst {Huge}=modules[\"numbers.js\"];\nconst {cost}=modules[\"upgrades.js\"];\nconst {createEncounter,stepCombat}=modules[\"combat.js\"];\nconst {newSummary,armorPercentage}=modules[\"strategy.js\"];\n\nconst statKeys=['attack','health','defense'];\nconst percent=n=>(n*100).toLocaleString('es-ES',{maximumFractionDigits:1})+'%';\nfunction packFight(f){return JSON.parse(JSON.stringify(f));}\nfunction unpackFight(raw){\n  const f=structuredClone(raw);\n  for(const group of ['basePlayer','player','boss'])for(const key of statKeys)f[group][key]=Huge.read(f[group][key]);\n  f.boss.reward=Huge.read(f.boss.reward);f.playerHP=Huge.read(f.playerHP);f.bossHP=Huge.read(f.bossHP);\n  for(const [key,value] of Object.entries(newSummary()))if(value instanceof Huge)f.summary[key]=Huge.read(f.summary[key]);\n  f.startingGold=Huge.read(f.startingGold??null);return f;\n}\nfunction diagnose(f){\n  const s=f.summary,remaining=f.bossHP.ratio(f.boss.health),armor=armorPercentage(s.enemyBlocked,s.enemyRaw)||0;\n  const healRatio=s.enemyHealing.ratio(s.dealt);\n  if(remaining<=.1)return {code:'close',title:'Derrota ajustada',evidence:`Al boss le quedaba ${percent(remaining)} de vida. Un ajuste pequeño podría bastar.`};\n  if(s.enemyHealing.log>-Infinity&&healRatio>=.55)return {code:'healing',title:'La curación compensa tu daño',evidence:`El boss recuperó ${percent(healRatio)} del daño que le infligiste. Necesitas más daño sostenido.`};\n  if(s.playerAttacks<=3)return {code:'survival',title:'Supervivencia insuficiente',evidence:`Solo pudiste atacar ${s.playerAttacks} ${s.playerAttacks===1?'vez':'veces'}. ${f.ultimate.activations?'Tu definitiva llegó a activarse.':'No llegaste a aprovechar tu definitiva.'}`};\n  if(armor>=60)return {code:'armor',title:'Su armadura frena tu daño',evidence:`Su armadura evitó el ${armor.toLocaleString('es-ES',{maximumFractionDigits:1})}% del daño bruto. No incluye su resistencia.`};\n  if(f.timeout||s.playerAttacks>=10)return {code:'damage',title:'Daño efectivo insuficiente',evidence:`Tras ${s.playerAttacks} ataques le quedaba ${percent(remaining)} de vida.`};\n  return {code:'pressure',title:'El intercambio favoreció al boss',evidence:`Infligiste ${s.dealt.format()} y recibiste ${s.received.format()} de daño; el boss conserva ${percent(remaining)} de vida.`};\n}\nfunction rng(seed){return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}\nfunction analyzeDefeat(raw,{maxMillis=1500,seeds=C.analysis.seeds}={}){\n  const f=unpackFight(raw),diagnosis=diagnose(f),start=performance.now();\n  if(!f.done||f.won)return {diagnosis:null,recommendation:'',scenarios:[]};\n  const count=C.analysis.upgradeCount;\n  const variants=[{id:'baseline',label:'Sin cambios',style:f.style,price:new Huge()},\n    ...statKeys.map(key=>({id:key,key,label:`+${count} mejoras de ${C.upgrades[key].name.toLowerCase()}`,style:f.style,price:cost({levels:f.upgradeLevels},key,count)})),\n    ...Object.keys(C.styles).filter(style=>style!==f.style).map(style=>({id:style,label:`estilo ${C.styles[style].name}`,style,price:new Huge()}))];\n  for(const v of variants){v.wins=0;v.remaining=0;v.turns=0;v.runs=0;}\n  // Paired seeds, complete batches: every scenario receives the same sample count.\n  for(let seed=0;seed<seeds;seed++){\n    if(seed>0&&performance.now()-start>maxMillis)break;\n    for(const v of variants){\n      const base={...f.basePlayer};if(v.key)base[v.key]=base[v.key].mul(C.upgrades[v.key].growth**count);\n      const trial=createEncounter(base,f.boss,v.style);\n      const random=rng(8927+seed*997);\n      while(!trial.done&&trial.turn<C.analysis.maxActions)stepCombat(null,trial,random);\n      v.runs++;v.wins+=Number(trial.won);v.remaining+=trial.bossHP.ratio(trial.boss.health);v.turns+=trial.turn;\n    }\n  }\n  const baseline=variants[0];\n  const candidates=variants.slice(1).filter(v=>v.runs>=6&&(v.wins>baseline.wins||v.remaining/v.runs<baseline.remaining/baseline.runs-.08));\n  candidates.sort((a,b)=>(b.wins-a.wins)||(a.remaining/a.runs-b.remaining/b.runs)||(a.price.log-b.price.log));\n  // If effectiveness is comparable (one victory), prefer a free/affordable change.\n  const best=candidates[0];\n  const affordable=best&&candidates.filter(v=>v.wins>=best.wins-1&&v.remaining/v.runs<=best.remaining/best.runs+.05&&f.startingGold.gte(v.price)).sort((a,b)=>a.price.log-b.price.log)[0];\n  const chosen=affordable||best;\n  const recommendation=chosen?`Prueba ${chosen.label}${chosen.price.log===-Infinity?' (sin coste)':` (coste: ${chosen.price.format()} oro${f.startingGold.gte(chosen.price)?'':'; requiere ahorrar'})`}. En escenarios hipotéticos ganó ${chosen.wins}/${chosen.runs}, frente a ${baseline.wins}/${baseline.runs} sin cambios. ${chosen.wins===0?'No bastó para ganar, pero dejó menos vida al boss. ':''}No garantiza la victoria.`:\n    `No se ha encontrado una mejora pequeña con evidencia suficiente. ${f.hasVictory?'Repite un nivel superado para reunir oro':'Prueba otro guardián inicial para conseguir oro'} y vuelve a evaluar; ninguna opción probada garantiza vencer.`;\n  return {diagnosis,recommendation,chosen:chosen?.id||null,runs:baseline.runs,elapsedMs:performance.now()-start,\n    scenarios:variants.map(v=>({id:v.id,label:v.label,runs:v.runs,wins:v.wins,meanBossRemaining:v.remaining/v.runs,meanTurns:v.turns/v.runs,cost:v.price.format()}))};\n}\n\nreturn {packFight,unpackFight,diagnose,analyzeDefeat};\n})();\nmodules[\"advice-worker.js\"]=(()=>{\nconst {analyzeDefeat}=modules[\"advice.js\"];\nself.onmessage=({data})=>{\n  try{self.postMessage({id:data.id,result:analyzeDefeat(data.fight)});}\n  catch{self.postMessage({id:data.id,error:'No se pudo completar la comparación. Puedes repetir un nivel superado y reunir recursos.'});}\n};\n\nreturn {};\n})();"],{type:'text/javascript'}));try{return new Worker(url);}finally{URL.revokeObjectURL(url);}}
+const modules=Object.create(null);
+modules["config.js"]=(()=>{
+// Central balance configuration. Advanced curves are intentionally much steeper.
+const initial = (id,name,item,rune,base,growth,ability,description) => ({
+  id,name,item,rune,label:{attack:'Ataque',defense:'Defensa',health:'Vida'}[id],
+  base,growth,anchor:1,rewardBase:28,rewardGrowth:1.30,ability,description
+});
+const CONFIG = {
+  version:2,initialGold:35,criticalChance:.12,criticalDamage:1.75,
+  upgrades:{
+    attack:{name:'Ataque',icon:'⚔',base:12,growth:1.15,cost:15,costGrowth:1.18},
+    health:{name:'Vida',icon:'♡',base:110,growth:1.15,cost:12,costGrowth:1.18},
+    defense:{name:'Defensa',icon:'◇',base:3,growth:1.15,cost:10,costGrowth:1.18}
+  },
+  combat:{minimumDamage:.08,maxTurns:2000},
+  styles:{
+    balanced:{name:'Equilibrado',attack:1,health:1,defense:1,description:'Sin modificadores'},
+    aggressive:{name:'Ofensivo',attack:1.25,health:.85,defense:.8,description:'+25% ataque · −15% vida · −20% defensa'},
+    defensive:{name:'Defensivo',attack:.85,health:1.2,defense:1.35,description:'−15% ataque · +20% vida · +35% defensa'}
+  },
+  caverns:{attack:'Fosa de la Furia',defense:'Bastión de Hierro',health:'Santuario de la Vitalidad',critical:'Umbral del Verdugo',penetration:'Cripta del Perforador',vampirism:'Altar Carmesí'},
+  ultimates:{
+    enabled:true,durationActions:6,
+    aggressive:{name:'Furia Desatada',chargeAttacks:3,critPoints:.35,critRelative:0,attack:1,mitigationStrength:0},
+    defensive:{name:'Bastión Inquebrantable',chargeAttacks:3,critPoints:0,critRelative:0,attack:1,mitigationStrength:.5},
+    balanced:{name:'Armonía del Guerrero',chargeAttacks:3,critPoints:0,critRelative:0,attack:1.12,mitigationStrength:.2}
+  },
+  analysis:{seeds:12,upgradeCount:3,maxActions:2000},
+  milestones:{
+    enabled:true,
+    attack:{interval:100,health:1.7,attack:1.4,defense:1.2,gold:2,ability:{enrageEvery:3,enrageMultiplier:1.5},description:'Cada tercer ataque inflige ×1,5 daño'},
+    defense:{interval:100,health:1.8,attack:1.25,defense:1.5,gold:2,ability:{resistance:.3},description:'Resistencia aumentada al 30%'},
+    health:{interval:100,health:2,attack:1.25,defense:1.2,gold:2,ability:{regeneration:.025},description:'Regenera 2,5% por turno propio'},
+    critical:{interval:50,health:1.7,attack:1.35,defense:1.2,gold:2,ability:{criticalChance:.4,criticalDamage:2.3},description:'40% de crítico · daño crítico ×2,3'},
+    penetration:{interval:25,health:1.7,attack:1.35,defense:1.3,gold:2,ability:{penetration:.8},description:'Ignora el 80% de defensa'},
+    vampirism:{interval:10,health:1.8,attack:1.35,defense:1.25,gold:2,ability:{vampirism:.3},description:'Recupera el 30% del daño infligido'}
+  },
+  bossScaling:{anchorGrowth:1.26},
+  items:{statPerLevel:.025,criticalPerLevel:.025,penetrationPerLevel:.005,vampirismPerLevel:.004},
+  economy:{repeatRate:.8,anchorRewardGrowth:1.30},
+  afk:{unlock:200,rewardRate:.05,feeRate:.005,delay:1200},
+  bosses:{
+    attack:initial('attack','El Vigía de Ceniza','Ojo de ceniza','◈',
+      {health:48,attack:12,defense:1},{health:1.25,attack:1.38,defense:1.18},{},'Ofensiva explosiva · vida y armadura más lentas'),
+    defense:initial('defense','El Caballero Hueco','Sello del vacío','♜',
+      {health:80,attack:4,defense:12},{health:1.30,attack:1.30,defense:1.42},{resistance:.25},'Armadura creciente · resistencia 25% · combate de desgaste'),
+    health:initial('health','La Madre de Piedra','Corazón de basalto','⬡',
+      {health:100,attack:5,defense:2},{health:1.40,attack:1.19,defense:1.12},{regeneration:.005},'Vida creciente · regenera 0,5% por turno propio'),
+    critical:{id:'critical',label:'Crítico',name:'La Tejedora de Ecos',item:'Hilo del abismo',rune:'✧',
+      unlock:{any:50,all:25},anchor:55,base:{health:60,attack:8,defense:1},
+      growth:{health:2.4,attack:2.4,defense:2.3},rewardBase:28,rewardGrowth:2.8,
+      ability:{criticalChance:.3,criticalDamage:2},description:'30% de crítico · golpes al 200% · defensa baja'},
+    penetration:{id:'penetration',label:'Penetración',name:'El Devorador de Luz',item:'Ascua perforante',rune:'☼',
+      unlock:{any:150,all:75},anchor:165,base:{health:65,attack:9,defense:3},
+      growth:{health:16.3,attack:16.3,defense:15},rewardBase:28,rewardGrowth:27,
+      ability:{penetration:.65},description:'Ignora el 65% de tu defensa'},
+    vampirism:{id:'vampirism',label:'Vampirismo',name:'El Rey Sepultado',item:'Corona carmesí',rune:'♛',
+      unlock:{any:350,all:175},anchor:380,base:{health:75,attack:10,defense:3},
+      growth:{health:100000,attack:100000,defense:90000},rewardBase:28,rewardGrowth:800000,
+      ability:{vampirism:.2},description:'Recupera el 20% del daño real que inflige'}
+  }
+};
+const BOSS_IDS=Object.keys(CONFIG.bosses);
+const INITIAL_IDS=['attack','defense','health'];
+
+return {CONFIG,BOSS_IDS,INITIAL_IDS};
+})();
+modules["numbers.js"]=(()=>{
+// Positive numbers in log10 space: exponential growth without Infinity at 1e308.
+class Huge {
+  constructor(log = -Infinity) { this.log = log; }
+  static of(n) { return new Huge(n > 0 ? Math.log10(n) : -Infinity); }
+  static read(n) { return new Huge(n === null ? -Infinity : n); }
+  add(b) { const hi = Math.max(this.log,b.log), lo = Math.min(this.log,b.log); return hi === -Infinity ? new Huge() : new Huge(hi + Math.log10(1 + 10 ** (lo-hi))); }
+  sub(b) { if (this.log <= b.log) return new Huge(); return new Huge(this.log + Math.log10(-Math.expm1((b.log-this.log)*Math.LN10))); }
+  mul(n) { return new Huge(this.log + Math.log10(n)); }
+  times(b) { return new Huge(this.log + b.log); }
+  gte(b) { return this.log + 1e-12 >= b.log; }
+  ratio(b) { return Math.min(1, 10 ** (this.log-b.log)) || 0; }
+  toJSON() { return this.log === -Infinity ? null : this.log; }
+  format() { if(this.log === -Infinity) return '0'; if(this.log < 6) return (10 ** this.log).toLocaleString('es-ES',{maximumFractionDigits:this.log < 2 ? 1 : 0}); const e=Math.floor(this.log); return `${(10 ** (this.log-e)).toFixed(2).replace('.',',')}e${e.toLocaleString('es-ES')}`; }
+}
+const scaled = (base,growth,level) => new Huge(Math.log10(base)+Math.log10(growth)*level);
+
+return {Huge,scaled};
+})();
+modules["items.js"]=(()=>{
+const {CONFIG:C}=modules["config.js"];
+function awardItem(state,id) {
+  state.items[id]={level:state.bosses[id].highest};
+  return state.items[id];
+}
+function bonusLog(state,stat) {
+  return Math.log10(1+C.items.statPerLevel*(state.items[stat]?.level||0))+(state.legacyBonuses?.[stat]||0);
+}
+function specialStats(state) {
+  const penetration=C.items.penetrationPerLevel*(state.items.penetration?.level||0);
+  const vampirism=C.items.vampirismPerLevel*(state.items.vampirism?.level||0);
+  return {criticalChance:C.criticalChance,
+    criticalDamage:C.criticalDamage+C.items.criticalPerLevel*(state.items.critical?.level||0),
+    penetration:penetration/(1+penetration),vampirism:vampirism/(1+vampirism)};
+}
+function itemDescription(state,id) {
+  const level=state.items[id]?.level||0;
+  const percent=n=>(n*100).toLocaleString('es-ES',{maximumFractionDigits:2})+'%';
+  if(id in C.upgrades)return `+${percent(C.items.statPerLevel*level)} ${C.upgrades[id].name.toLowerCase()}`;
+  if(id==='critical')return `+${(C.items.criticalPerLevel*level*100).toLocaleString('es-ES')} puntos de daño crítico`;
+  return `${percent(specialStats(state)[id])} ${id==='penetration'?'defensa ignorada':'robo de vida'}`;
+}
+
+return {awardItem,bonusLog,specialStats,itemDescription};
+})();
+modules["upgrades.js"]=(()=>{
+const { CONFIG:C }=modules["config.js"];
+const { Huge,scaled }=modules["numbers.js"];
+const { bonusLog,specialStats }=modules["items.js"];
+function stats(state) {
+  return {...Object.fromEntries(Object.entries(C.upgrades).map(([key,c])=>[key,new Huge(scaled(c.base,c.growth,state.levels[key]).log+bonusLog(state,key))])),...specialStats(state)};
+}
+function cost(state,key,count=1) {
+  const c=C.upgrades[key], first=scaled(c.cost,c.costGrowth,state.levels[key]);
+  if(count===1) return first;
+  const x=count*Math.log(c.costGrowth);
+  const logSum=(x>700 ? x : Math.log(Math.expm1(x)))-Math.log(c.costGrowth-1);
+  return new Huge(first.log+logSum/Math.LN10);
+}
+function maxBuy(state,key) {
+  const c=C.upgrades[key], delta=state.gold.log-cost(state,key).log+Math.log10(c.costGrowth-1);
+  let n=Math.floor((delta>15 ? delta*Math.LN10 : Math.log1p(10**delta))/Math.log(c.costGrowth));
+  n=Math.max(0,Math.min(n,Number.MAX_SAFE_INTEGER-state.levels[key]));
+  if(n>0&&!state.gold.gte(cost(state,key,n))) n--;
+  return n;
+}
+function buy(state,key,count) {
+  if(!C.upgrades[key]) return false;
+  const n=count==='max'?maxBuy(state,key):count;
+  if(!Number.isSafeInteger(n)||n<1||!Number.isSafeInteger(state.levels[key]+n)) return false;
+  const price=cost(state,key,n); if(!state.gold.gte(price)) return false;
+  state.gold=state.gold.sub(price);state.levels[key]+=n;return true;
+}
+
+return {stats,cost,maxBuy,buy};
+})();
+modules["bosses.js"]=(()=>{
+const {CONFIG:C,INITIAL_IDS,BOSS_IDS}=modules["config.js"];
+const {scaled}=modules["numbers.js"];
+function unlockProgress(state,id) {
+  const requirement=C.bosses[id].unlock;
+  const levels=INITIAL_IDS.map(key=>state.bosses[key].highest);
+  return {any:Math.max(...levels),all:Math.min(...levels),requirement};
+}
+function checkUnlocks(state) {
+  const unlocked=[];
+  for(const id of BOSS_IDS){
+    const {any,all,requirement}=unlockProgress(state,id);
+    if(!state.bosses[id].unlocked&&(!requirement||(any>=requirement.any&&all>=requirement.all))){
+      state.bosses[id].unlocked=true;unlocked.push(id);
+    }
+  }
+  return unlocked;
+}
+function getBoss(state,id,level=state.bosses[id].next,{specials=true}={}) {
+  const c=C.bosses[id];
+  if(!c||!Number.isSafeInteger(level)||level<1)throw Error('Nivel de boss no válido.');
+  const stat=key=>scaled(c.base[key],C.bossScaling.anchorGrowth,c.anchor-1).times(scaled(1,c.growth[key],level-1));
+  const special=specials&&C.milestones.enabled&&level%C.milestones[id].interval===0;
+  const m=C.milestones[id];
+  return {...c,level,special,ability:{...c.ability,...(special?m.ability:{})},
+    health:stat('health').mul(special?m.health:1),attack:stat('attack').mul(special?m.attack:1),defense:stat('defense').mul(special?m.defense:1),
+    reward:scaled(c.rewardBase,C.economy.anchorRewardGrowth,c.anchor-1).times(scaled(1,c.rewardGrowth,level-1))};
+}
+function rewardFor(boss,mode,automatic=false,specialEligible=true) {
+  return boss.reward.mul((mode==='repeat'?C.economy.repeatRate:1)*(automatic?C.afk.rewardRate:1)*(boss.special&&mode==='progress'&&specialEligible?C.milestones[boss.id].gold:1));
+}
+
+return {unlockProgress,checkUnlocks,getBoss,rewardFor};
+})();
+modules["strategy.js"]=(()=>{
+const {CONFIG:C}=modules["config.js"];
+const {Huge}=modules["numbers.js"];
+function applyStyle(player,style='balanced') {
+  const c=C.styles[style]||C.styles.balanced;
+  return {...player,attack:player.attack.mul(c.attack),health:player.health.mul(c.health),defense:player.defense.mul(c.defense)};
+}
+function newUltimate(){return {charge:0,remaining:0,activations:0,activeAttacks:0,activeResponses:0};}
+function ultimateEffects(f){
+  const c=C.ultimates[f.style],active=C.ultimates.enabled&&f.ultimate.remaining>0;
+  return {active,attack:active?c.attack:1,
+    criticalChance:Math.min(1,Math.max(0,f.player.criticalChance*(active?1+c.critRelative:1)+(active?c.critPoints:0))),
+    damageTaken:active?1/(1+c.mitigationStrength):1};
+}
+// Six subsequent actions = three enemy responses and three protagonist attacks.
+// Charge pauses while active; the triggering attack itself is not empowered.
+function advanceUltimate(f,playerTurn,wasActive){
+  const u=f.ultimate;if(!C.ultimates.enabled)return false;
+  if(wasActive){u.remaining--;if(playerTurn)u.activeAttacks++;else u.activeResponses++;return false;}
+  if(!playerTurn||f.bossHP.log===-Infinity||f.playerHP.log===-Infinity)return false;
+  u.charge++;
+  if(u.charge<C.ultimates[f.style].chargeAttacks)return false;
+  u.charge=0;u.remaining=C.ultimates.durationActions;u.activations++;return true;
+}
+function chargePercent(f){return f.done?0:Math.min(100,100*f.ultimate.charge/C.ultimates[f.style].chargeAttacks);}
+function newSummary(){return {dealt:new Huge(),received:new Huge(),enemyRaw:new Huge(),enemyBlocked:new Huge(),playerRaw:new Huge(),playerBlocked:new Huge(),enemyHealing:new Huge(),playerHealing:new Huge(),ultimatePrevented:new Huge(),enemyResisted:new Huge(),playerAttacks:0,enemyAttacks:0,playerCrits:0,enemyCrits:0,expectedCrits:0,ultimateDamage:new Huge()};}
+function armorPercentage(blocked,raw){return raw.log===-Infinity?null:100*blocked.ratio(raw);}
+
+return {applyStyle,newUltimate,ultimateEffects,advanceUltimate,chargePercent,newSummary,armorPercentage};
+})();
+modules["combat.js"]=(()=>{
+const {CONFIG:C}=modules["config.js"];
+const {Huge}=modules["numbers.js"];
+const {stats}=modules["upgrades.js"];
+const {getBoss,rewardFor,checkUnlocks}=modules["bosses.js"];
+const {awardItem}=modules["items.js"];
+const {applyStyle,newUltimate,ultimateEffects,advanceUltimate,newSummary}=modules["strategy.js"];
+function damage(attack,defense,penetration=0,resistance=0) {
+  const floor=attack.mul(C.combat.minimumDamage),d=attack.sub(defense.mul(1-penetration));
+  return (d.gte(floor)?d:floor).mul(1-resistance);
+}
+function min(a,b){return a.log<b.log?a:b;}
+function createEncounter(basePlayer,boss,style='balanced',options={}){
+  const player=applyStyle(basePlayer,style);
+  return {boss,basePlayer:{...basePlayer},player,style,playerHP:player.health,bossHP:boss.health,
+    turn:0,done:false,log:[],ultimate:newUltimate(),summary:newSummary(),...options};
+}
+function startCombat(state,id,mode='progress',automatic=false) {
+  const progress=state.bosses[id];
+  if(state.pending||!progress?.unlocked||!['progress','repeat'].includes(mode))return null;
+  if(mode==='repeat'&&!progress.highest)return null;
+  const level=mode==='repeat'?progress.highest:progress.next;
+  if(!Number.isSafeInteger(level+1)||!Number.isSafeInteger(state.combatSeq+1))return null;
+  const boss=getBoss(state,id,level),fee=boss.reward.mul(C.afk.feeRate);
+  if(automatic){if(!state.afk.unlocked||!state.gold.gte(fee))return null;state.gold=state.gold.sub(fee);}
+  const token=++state.combatSeq;state.pending={token,id,level,mode,automatic};
+  return createEncounter(stats(state),boss,state.style,{token,automatic,mode,upgradeLevels:{...state.levels},startingGold:state.gold,hasVictory:Object.values(state.bosses).some(b=>b.highest>0)});
+}
+function finish(state,fight,won){
+  if(!state){fight.done=true;fight.won=won;fight.ultimate.remaining=0;fight.ultimate.charge=0;return;}
+  if(state.pending?.token!==fight.token||state.pending.id!==fight.boss.id)return;
+  fight.done=true;fight.won=won;state.pending=null;fight.ultimate.remaining=0;fight.ultimate.charge=0;
+  if(won){
+    const progress=state.bosses[fight.boss.id];
+    if(fight.mode==='progress'&&progress.next!==fight.boss.level)return;
+    const m=state.milestones[fight.boss.id];
+    const eligible=fight.mode==='progress'&&fight.boss.special&&fight.boss.level>m.legacyThrough&&!m.claimed.includes(fight.boss.level);
+    fight.reward=rewardFor(fight.boss,fight.mode,fight.automatic,eligible);
+    fight.milestoneClaimed=eligible;
+    if(eligible)m.claimed.push(fight.boss.level);
+    state.gold=state.gold.add(fight.reward);progress.wins++;
+    if(fight.mode==='progress'){
+      progress.highest=fight.boss.level;progress.next=progress.highest+1;
+      fight.item=awardItem(state,fight.boss.id);fight.unlocked=checkUnlocks(state);
+    }else progress.repeats++;
+  }
+  if(fight.automatic&&!won){
+    if(fight.mode==='progress'&&state.bosses[fight.boss.id].highest)state.afk.mode='repeat';
+    else state.afk.active=false;
+  }
+}
+function stepCombat(state,fight,rng=Math.random) {
+  if(fight.done||(state&&state.pending?.token!==fight.token))return null;
+  const playerTurn=fight.turn%2===0,a={...fight.boss.ability};
+  const effects=ultimateEffects(fight);
+  const critical=rng()<(playerTurn?effects.criticalChance:(a.criticalChance||0));
+  const crit=playerTurn?fight.player.criticalDamage:(a.criticalDamage||1);
+  const enraged=!playerTurn&&a.enrageEvery&&(Math.floor(fight.turn/2)+1)%a.enrageEvery===0;
+  const attack=playerTurn?fight.player.attack.mul(effects.attack):fight.boss.attack.mul(enraged?a.enrageMultiplier:1);
+  const defense=playerTurn?fight.boss.defense:fight.player.defense;
+  const penetration=playerTurn?fight.player.penetration:(a.penetration||0);
+  const raw=attack.mul(critical?crit:1);
+  const afterArmor=damage(attack,defense,penetration).mul(critical?crit:1);
+  const hit=afterArmor.mul(playerTurn?(1-(a.resistance||0)):effects.damageTaken);
+  const actual=min(hit,playerTurn?fight.bossHP:fight.playerHP);
+  const armorBlocked=raw.sub(afterArmor),summary=fight.summary;
+  if(playerTurn){summary.dealt=summary.dealt.add(actual);summary.enemyRaw=summary.enemyRaw.add(raw);summary.enemyBlocked=summary.enemyBlocked.add(armorBlocked);}
+  else{summary.received=summary.received.add(actual);summary.playerRaw=summary.playerRaw.add(raw);summary.playerBlocked=summary.playerBlocked.add(armorBlocked);}
+  if(playerTurn){summary.playerAttacks++;summary.playerCrits+=Number(critical);summary.expectedCrits+=effects.criticalChance;summary.enemyResisted=summary.enemyResisted.add(afterArmor.sub(hit));if(effects.active)summary.ultimateDamage=summary.ultimateDamage.add(actual);}
+  else{summary.enemyAttacks++;summary.enemyCrits+=Number(critical);summary.ultimatePrevented=summary.ultimatePrevented.add(afterArmor.sub(hit));}
+  let healed=new Huge(),potentialHeal=new Huge(),missingBeforeHeal=new Huge();
+  if(playerTurn){
+    fight.bossHP=fight.bossHP.sub(hit);
+    healed=min(fight.player.health.sub(fight.playerHP),actual.mul(fight.player.vampirism));
+    fight.playerHP=fight.playerHP.add(healed);
+  }else{
+    fight.playerHP=fight.playerHP.sub(hit);
+    potentialHeal=actual.mul(a.vampirism||0).add(fight.boss.health.mul(a.regeneration||0));
+    missingBeforeHeal=fight.boss.health.sub(fight.bossHP);
+    healed=min(missingBeforeHeal,potentialHeal);
+    fight.bossHP=fight.bossHP.add(healed);
+  }
+  if(playerTurn)summary.playerHealing=summary.playerHealing.add(healed);else summary.enemyHealing=summary.enemyHealing.add(healed);
+  const event={playerTurn,critical,hit:actual,healed,raw,afterArmor};
+  event.ultimateActivated=advanceUltimate(fight,playerTurn,effects.active);
+  fight.turn++;
+  if(fight.bossHP.log===-Infinity||fight.playerHP.log===-Infinity)finish(state,fight,fight.bossHP.log===-Infinity);
+  if(fight.turn>=C.combat.maxTurns&&!fight.done){fight.timeout=true;finish(state,fight,false);}
+  return event;
+}
+function unlockAFK(state){const price=Huge.of(C.afk.unlock);if(state.afk.unlocked||!state.gold.gte(price))return false;state.gold=state.gold.sub(price);state.afk.unlocked=true;return true;}
+
+return {damage,createEncounter,startCombat,stepCombat,unlockAFK};
+})();
+modules["save.js"]=(()=>{
+const {CONFIG:C,BOSS_IDS,INITIAL_IDS}=modules["config.js"];
+const {Huge}=modules["numbers.js"];
+const {checkUnlocks}=modules["bosses.js"];
+const SAVE_KEY='cavernaburx.save.v2';
+const LEGACY_KEY='cavernaburx.save.v1';
+const integer=(n,min=0)=>Number.isSafeInteger(n)&&n>=min;
+const validGold=n=>n===null||(typeof n==='number'&&Number.isFinite(n));
+function freshState(){
+  return {version:C.version,gold:Huge.of(C.initialGold),levels:{attack:0,health:0,defense:0},
+    bosses:Object.fromEntries(BOSS_IDS.map(id=>[id,{highest:0,next:1,unlocked:INITIAL_IDS.includes(id),wins:0,repeats:0}])),
+    items:{},selectedBoss:'attack',afk:{unlocked:false,active:false,mode:'progress',bossId:'attack'},
+    speed:1,combatSeq:0,pending:null,legacyBonuses:{attack:0,health:0,defense:0},migration:null,
+    rulesVersion:1,style:'balanced',milestones:Object.fromEntries(BOSS_IDS.map(id=>[id,{legacyThrough:0,claimed:[]}]))};
+}
+function validateCommon(s){
+  if(!s||!validGold(s.gold)||!s.levels||!Object.keys(C.upgrades).every(k=>integer(s.levels[k])))throw Error('Recursos o mejoras no válidos.');
+  if(!s.afk||typeof s.afk.unlocked!=='boolean'||typeof s.afk.active!=='boolean'||!['progress','repeat'].includes(s.afk.mode))throw Error('AFK no válido.');
+}
+function migrateV1(old,raw){
+  validateCommon(old);
+  if(!integer(old.highest)||old.highest>1000000||!Array.isArray(old.items)||old.items.length!==old.highest||!old.wins||Object.keys(old.wins).length!==old.highest)throw Error('No se puede migrar un historial incompleto. El original se conserva.');
+  const s=freshState(),seen=new Set(),oldBonus={attack:0,health:0,defense:0};
+  const correspondence=['attack','health','defense','attack','health','defense'];
+  for(const i of old.items){
+    if(!integer(i.boss,1)||i.boss>old.highest||seen.has(i.boss)||i.family!==(i.boss-1)%6||!integer(i.level,1)||!Number.isFinite(i.xp)||i.xp<0||!integer(old.wins[i.boss],1))throw Error('Reliquia antigua sin correspondencia fiable.');
+    seen.add(i.boss);const id=correspondence[i.family];
+    s.bosses[id].highest++;s.bosses[id].wins+=old.wins[i.boss];
+    oldBonus[id]+=Math.log10(1+.025*i.level);
+  }
+  for(const id of INITIAL_IDS){
+    const p=s.bosses[id];p.next=p.highest+1;p.repeats=p.wins-p.highest;
+    if(p.highest)s.items[id]={level:p.highest};
+    s.legacyBonuses[id]=Math.max(0,oldBonus[id]-Math.log10(1+C.items.statPerLevel*p.highest));
+  }
+  s.gold=old.gold;s.levels={...old.levels};s.speed=old.speed;s.afk.unlocked=old.afk.unlocked;
+  s.migration={from:1,source:raw,note:'Partida v1 migrada: victorias agrupadas por Ataque/Vida/Defensa. Oro y mejoras conservados. El legado mantiene las bonificaciones anteriores. AFK en pausa.'};
+  for(const id of BOSS_IDS)s.milestones[id].legacyThrough=s.bosses[id].highest;
+  checkUnlocks(s);return s;
+}
+function decode(raw){
+  let s=JSON.parse(raw);
+  if(s?.version===1)s=migrateV1(s,raw);
+  if(s?.version!==C.version)throw Error('Versión de partida no compatible.');
+  validateCommon(s);
+  if(!s.bosses||Object.keys(s.bosses).length!==6||!s.items||Array.isArray(s.items)||Object.keys(s.items).some(id=>!BOSS_IDS.includes(id)))throw Error('Se requieren exactamente seis bosses.');
+  for(const id of BOSS_IDS){
+    const p=s.bosses[id],item=s.items[id];
+    if(!p||!integer(p.highest)||!integer(p.next,1)||p.next!==p.highest+1||typeof p.unlocked!=='boolean'||!integer(p.wins)||!integer(p.repeats)||p.wins!==p.highest+p.repeats)throw Error('Progreso de boss no válido.');
+    if(p.highest&&(!p.unlocked||!item||item.level!==p.highest))throw Error('Boss y reliquia no coinciden.');
+    if(!p.highest&&item)throw Error('Reliquia sin primera victoria.');
+    if(INITIAL_IDS.includes(id)&&!p.unlocked)throw Error('Boss inicial bloqueado.');
+  }
+  if(s.rulesVersion===undefined){
+    if(s.style!==undefined||s.milestones!==undefined)throw Error('Extensión de guardado incompleta.');
+    s.rulesVersion=1;s.style='balanced';s.milestones=Object.fromEntries(BOSS_IDS.map(id=>[id,{legacyThrough:s.bosses[id].highest,claimed:[]}])) ;
+  }
+  if(s.rulesVersion!==1||!Object.hasOwn(C.styles,s.style)||!s.milestones||Object.keys(s.milestones).length!==6)throw Error('Estrategia o hitos no válidos.');
+  for(const id of BOSS_IDS){const m=s.milestones[id];
+    if(!m||!integer(m.legacyThrough)||m.legacyThrough>s.bosses[id].highest||!Array.isArray(m.claimed)||m.claimed.some((n,i)=>!integer(n,1)||n<=m.legacyThrough||n>s.bosses[id].highest||(i>0&&n<=m.claimed[i-1])))throw Error('Historial de hitos no válido.');
+  }
+  if(!BOSS_IDS.includes(s.selectedBoss)||!BOSS_IDS.includes(s.afk.bossId)||!integer(s.combatSeq))throw Error('Selección o secuencia no válida.');
+  if(s.afk.active&&(!s.afk.unlocked||!s.bosses[s.afk.bossId].unlocked))throw Error('Expedición no válida.');
+  if(!s.legacyBonuses||!INITIAL_IDS.every(id=>typeof s.legacyBonuses[id]==='number'&&Number.isFinite(s.legacyBonuses[id])&&s.legacyBonuses[id]>=0))throw Error('Legado no válido.');
+  if(s.migration!==null&&(!s.migration||s.migration.from!==1||typeof s.migration.source!=='string'))throw Error('Copia de migración no válida.');
+  if(s.pending!==null){const p=s.pending;if(!p||p.token!==s.combatSeq||!BOSS_IDS.includes(p.id)||!['progress','repeat'].includes(p.mode)||typeof p.automatic!=='boolean'||p.level!==s.bosses[p.id][p.mode==='repeat'?'highest':'next'])throw Error('Combate pendiente no válido.');}
+  s.gold=Huge.read(s.gold);s.speed=[1,2,4].includes(s.speed)?s.speed:1;checkUnlocks(s);return s;
+}
+function save(state,storage=localStorage){storage.setItem(SAVE_KEY,JSON.stringify(state));}
+function load(storage=localStorage){
+  const current=storage.getItem(SAVE_KEY),old=storage.getItem(LEGACY_KEY);
+  const s=current?decode(current):old?decode(old):freshState();
+  s.pending=null;
+  if(!current&&old)save(s,storage);
+  return s;
+}
+
+return {SAVE_KEY,LEGACY_KEY,freshState,decode,save,load};
+})();
+modules["advice.js"]=(()=>{
+const {CONFIG:C}=modules["config.js"];
+const {Huge}=modules["numbers.js"];
+const {cost}=modules["upgrades.js"];
+const {createEncounter,stepCombat}=modules["combat.js"];
+const {newSummary,armorPercentage}=modules["strategy.js"];
+
+const statKeys=['attack','health','defense'];
+const percent=n=>(n*100).toLocaleString('es-ES',{maximumFractionDigits:1})+'%';
+function packFight(f){return JSON.parse(JSON.stringify(f));}
+function unpackFight(raw){
+  const f=structuredClone(raw);
+  for(const group of ['basePlayer','player','boss'])for(const key of statKeys)f[group][key]=Huge.read(f[group][key]);
+  f.boss.reward=Huge.read(f.boss.reward);f.playerHP=Huge.read(f.playerHP);f.bossHP=Huge.read(f.bossHP);
+  for(const [key,value] of Object.entries(newSummary()))if(value instanceof Huge)f.summary[key]=Huge.read(f.summary[key]);
+  f.startingGold=Huge.read(f.startingGold??null);return f;
+}
+function diagnose(f){
+  const s=f.summary,remaining=f.bossHP.ratio(f.boss.health),armor=armorPercentage(s.enemyBlocked,s.enemyRaw)||0;
+  const healRatio=s.enemyHealing.ratio(s.dealt);
+  if(remaining<=.1)return {code:'close',title:'Derrota ajustada',evidence:`Al boss le quedaba ${percent(remaining)} de vida. Un ajuste pequeño podría bastar.`};
+  if(s.enemyHealing.log>-Infinity&&healRatio>=.55)return {code:'healing',title:'La curación compensa tu daño',evidence:`El boss recuperó ${percent(healRatio)} del daño que le infligiste. Necesitas más daño sostenido.`};
+  if(s.playerAttacks<=3)return {code:'survival',title:'Supervivencia insuficiente',evidence:`Solo pudiste atacar ${s.playerAttacks} ${s.playerAttacks===1?'vez':'veces'}. ${f.ultimate.activations?'Tu definitiva llegó a activarse.':'No llegaste a aprovechar tu definitiva.'}`};
+  if(armor>=60)return {code:'armor',title:'Su armadura frena tu daño',evidence:`Su armadura evitó el ${armor.toLocaleString('es-ES',{maximumFractionDigits:1})}% del daño bruto. No incluye su resistencia.`};
+  if(f.timeout||s.playerAttacks>=10)return {code:'damage',title:'Daño efectivo insuficiente',evidence:`Tras ${s.playerAttacks} ataques le quedaba ${percent(remaining)} de vida.`};
+  return {code:'pressure',title:'El intercambio favoreció al boss',evidence:`Infligiste ${s.dealt.format()} y recibiste ${s.received.format()} de daño; el boss conserva ${percent(remaining)} de vida.`};
+}
+function rng(seed){return ()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
+function analyzeDefeat(raw,{maxMillis=1500,seeds=C.analysis.seeds}={}){
+  const f=unpackFight(raw),diagnosis=diagnose(f),start=performance.now();
+  if(!f.done||f.won)return {diagnosis:null,recommendation:'',scenarios:[]};
+  const count=C.analysis.upgradeCount;
+  const variants=[{id:'baseline',label:'Sin cambios',style:f.style,price:new Huge()},
+    ...statKeys.map(key=>({id:key,key,label:`+${count} mejoras de ${C.upgrades[key].name.toLowerCase()}`,style:f.style,price:cost({levels:f.upgradeLevels},key,count)})),
+    ...Object.keys(C.styles).filter(style=>style!==f.style).map(style=>({id:style,label:`estilo ${C.styles[style].name}`,style,price:new Huge()}))];
+  for(const v of variants){v.wins=0;v.remaining=0;v.turns=0;v.runs=0;}
+  // Paired seeds, complete batches: every scenario receives the same sample count.
+  for(let seed=0;seed<seeds;seed++){
+    if(seed>0&&performance.now()-start>maxMillis)break;
+    for(const v of variants){
+      const base={...f.basePlayer};if(v.key)base[v.key]=base[v.key].mul(C.upgrades[v.key].growth**count);
+      const trial=createEncounter(base,f.boss,v.style);
+      const random=rng(8927+seed*997);
+      while(!trial.done&&trial.turn<C.analysis.maxActions)stepCombat(null,trial,random);
+      v.runs++;v.wins+=Number(trial.won);v.remaining+=trial.bossHP.ratio(trial.boss.health);v.turns+=trial.turn;
+    }
+  }
+  const baseline=variants[0];
+  const candidates=variants.slice(1).filter(v=>v.runs>=6&&(v.wins>baseline.wins||v.remaining/v.runs<baseline.remaining/baseline.runs-.08));
+  candidates.sort((a,b)=>(b.wins-a.wins)||(a.remaining/a.runs-b.remaining/b.runs)||(a.price.log-b.price.log));
+  // If effectiveness is comparable (one victory), prefer a free/affordable change.
+  const best=candidates[0];
+  const affordable=best&&candidates.filter(v=>v.wins>=best.wins-1&&v.remaining/v.runs<=best.remaining/best.runs+.05&&f.startingGold.gte(v.price)).sort((a,b)=>a.price.log-b.price.log)[0];
+  const chosen=affordable||best;
+  const recommendation=chosen?`Prueba ${chosen.label}${chosen.price.log===-Infinity?' (sin coste)':` (coste: ${chosen.price.format()} oro${f.startingGold.gte(chosen.price)?'':'; requiere ahorrar'})`}. En escenarios hipotéticos ganó ${chosen.wins}/${chosen.runs}, frente a ${baseline.wins}/${baseline.runs} sin cambios. ${chosen.wins===0?'No bastó para ganar, pero dejó menos vida al boss. ':''}No garantiza la victoria.`:
+    `No se ha encontrado una mejora pequeña con evidencia suficiente. ${f.hasVictory?'Repite un nivel superado para reunir oro':'Prueba otro guardián inicial para conseguir oro'} y vuelve a evaluar; ninguna opción probada garantiza vencer.`;
+  return {diagnosis,recommendation,chosen:chosen?.id||null,runs:baseline.runs,elapsedMs:performance.now()-start,
+    scenarios:variants.map(v=>({id:v.id,label:v.label,runs:v.runs,wins:v.wins,meanBossRemaining:v.remaining/v.runs,meanTurns:v.turns/v.runs,cost:v.price.format()}))};
+}
+
+return {packFight,unpackFight,diagnose,analyzeDefeat};
+})();
+modules["app.js"]=await (async()=>{
+const {CONFIG:C,BOSS_IDS}=modules["config.js"];
+const {stats,cost,buy,maxBuy}=modules["upgrades.js"];
+const {getBoss,rewardFor,unlockProgress}=modules["bosses.js"];
+const {startCombat,stepCombat,unlockAFK}=modules["combat.js"];
+const {freshState,load,save,decode,SAVE_KEY,LEGACY_KEY}=modules["save.js"];
+const {itemDescription}=modules["items.js"];
+const {packFight,diagnose}=modules["advice.js"];
+const {applyStyle,chargePercent,armorPercentage}=modules["strategy.js"];
+const $=id=>document.getElementById(id);
+const pct=n=>(100*n).toLocaleString('es-ES',{maximumFractionDigits:1})+'%';
+let state,saveBlocked=false,readOnly=false,fight=null,timer=null,toastTimer,mode='progress';
+// A tab owns the save for its lifetime. Secondary tabs cannot race victories/writes.
+if(navigator.locks){
+  readOnly=!(await new Promise(resolve=>navigator.locks.request('cavernaburx-session',{ifAvailable:true},async lock=>{
+    resolve(Boolean(lock));if(lock)await new Promise(()=>{});
+  })));
+}
+try {const raw=readOnly&&(localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_KEY));state=readOnly?(raw?decode(raw):freshState()):load();}
+catch(e){state=freshState();saveBlocked=true;$('save-status').textContent='Guardado protegido. '+e.message;}
+const busy=()=>Boolean(fight&&!fight.done);
+const blocked=()=>readOnly||saveBlocked;
+let adviceWorker=null,adviceId=0;
+function cancelAdvice(){adviceId++;adviceWorker?.terminate();adviceWorker=null;$('combat-advice').hidden=true;}
+function requestAdvice(encounter){
+  cancelAdvice();const id=adviceId,diagnosis=diagnose(encounter);
+  $('combat-advice').hidden=false;$('advice-diagnosis').textContent=diagnosis.title;$('advice-evidence').textContent=diagnosis.evidence;
+  $('advice-recommendation').textContent='Comparando mejoras y estilos…';
+  try{
+    adviceWorker=createPortableWorker();
+    adviceWorker.onmessage=({data})=>{if(id!==adviceId||fight!==encounter)return;$('advice-recommendation').textContent=data.result?.recommendation||data.error;adviceWorker?.terminate();adviceWorker=null;};
+    adviceWorker.onerror=()=>{if(id!==adviceId)return;$('advice-recommendation').textContent='La comparación no está disponible. Este diagnóstico utiliza solo el combate observado.';adviceWorker?.terminate();adviceWorker=null;};
+    adviceWorker.postMessage({id,fight:packFight(encounter)});
+  }catch{$('advice-recommendation').textContent='Tu navegador no permite la comparación en segundo plano. El diagnóstico usa el combate observado.';}
+}
+function renderUltimate(){
+  const style=fight?.style||state.style,c=C.ultimates[style],active=Boolean(fight&&!fight.done&&fight.ultimate.remaining>0),charge=fight?chargePercent(fight):0;
+  $('ultimate-percent').textContent=Math.round(charge)+'%';$('ultimate-bar').style.width=charge+'%';$('ultimate-track').setAttribute('aria-valuenow',String(Math.round(charge)));
+  $('ultimate-track').classList.toggle('ultimate-active',active);
+  const bonus=style==='aggressive'?`+${Math.round(c.critPoints*100)} puntos de probabilidad crítica`:style==='defensive'?`${pct(1-1/(1+c.mitigationStrength))} menos daño recibido`:`+${Math.round((c.attack-1)*100)}% ataque · ${pct(1-1/(1+c.mitigationStrength))} menos daño recibido`;
+  $('ultimate-state').textContent=c.name+(active?` · activa · ${fight.ultimate.remaining} acciones restantes`:` · carga en ${c.chargeAttacks} ataques`)+` · ${bonus}`;
+  $('ultimate-hint').textContent=active?'Definitiva activa':'Definitiva automática';
+}
+function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4000);}
+function persist(){if(blocked())return;try{save(state);$('save-status').textContent='Partida guardada · '+new Date().toLocaleTimeString('es-ES');}catch{saveBlocked=true;state.afk.active=false;clearTimeout(timer);$('save-status').textContent='No se pudo guardar. Exporta tu progreso antes de recargar.';toast('Guardado no disponible: partida en pausa. Exporta una copia.');}}
+function tab(name){document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===name));document.querySelectorAll('.nav').forEach(el=>el.classList.toggle('active',el.dataset.tab===name));}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+document.querySelectorAll('[data-subtab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.cavern-pane').forEach(el=>el.hidden=el.id!==b.dataset.subtab);document.querySelectorAll('[data-subtab]').forEach(el=>el.classList.toggle('selected',el===b));}));
+function requirements(id){const {any,all,requirement:r}=unlockProgress(state,id);return r?`Uno inicial: ${Math.min(any,r.any)} / ${r.any} · Los tres: ${Math.min(all,r.all)} / ${r.all}`:'';}
+function renderBosses(){
+  $('boss-roster').innerHTML=BOSS_IDS.map(id=>{
+    const c=C.bosses[id],p=state.bosses[id];
+    const {any,all,requirement:r}=unlockProgress(state,id);
+    const progress=r?Math.min(1,any/r.any,all/r.all):1;
+    return `<button class="boss-choice ${state.selectedBoss===id?'chosen':''} ${p.unlocked?'':'locked'}" data-boss="${id}" aria-pressed="${state.selectedBoss===id}" ${busy()||state.afk.active||blocked()?'disabled':''}>
+      <span class="boss-choice-top"><span class="rune">${c.rune}</span><span>${p.unlocked?'DISPONIBLE':'BLOQUEADO'}</span></span>
+      <strong>${C.caverns[id]}</strong>
+      <span class="boss-choice-level">Nivel <b>${p.next}</b> · ${c.label}</span></button>`;
+  }).join('');
+}
+function render(){
+  const base=stats(state),p=applyStyle(base,state.style),id=state.selectedBoss,progress=state.bosses[id];
+  const boss=fight?.boss||getBoss(state,id);
+  $('gold').textContent=state.gold.format();
+  $('highest').textContent=Math.max(...BOSS_IDS.map(key=>state.bosses[key].highest));
+  $('power').textContent=p.attack.mul(10).add(p.health).add(p.defense.mul(10)).format();
+  $('item-count').textContent=`${Object.keys(state.items).length}/6`;
+  $('speed').value=state.speed;$('boss-rune').textContent=boss.rune;
+  $('boss-level').textContent=`${C.caverns[id].toUpperCase()} · NIVEL ${boss.level}${boss.special?' · HITO ESPECIAL':''}`;
+  $('boss-name').textContent=boss.name;$('boss-wins').textContent=boss.description;
+  $('encounter-type').textContent=busy()?'COMBATE EN CURSO':fight?.done?'RESULTADO DEL ENCUENTRO':progress.unlocked?'SIGUIENTE DESAFÍO':'GUARDIÁN BLOQUEADO';
+  const ps=fight?.player||p,ph=fight?.playerHP||p.health,bh=fight?.bossHP||boss.health;
+  $('player-hp').textContent=`${ph.format()} / ${ps.health.format()}`;$('boss-hp').textContent=`${bh.format()} / ${boss.health.format()}`;
+  $('player-bar').style.width=`${100*ph.ratio(ps.health)}%`;$('boss-bar').style.width=`${100*bh.ratio(boss.health)}%`;
+  $('player-stats').innerHTML=`<span>ATQ <b>${ps.attack.format()}</b></span><span>DEF <b>${ps.defense.format()}</b></span><span>CRÍT <b>${pct(ps.criticalChance)}</b></span>`;
+  $('boss-stats').innerHTML=`<span>ATQ <b>${boss.attack.format()}</b></span><span>DEF <b>${boss.defense.format()}</b></span>`;
+  $('fight').disabled=blocked()||busy()||state.afk.active||!progress.unlocked;
+  $('repeat').disabled=blocked()||busy()||state.afk.active||!progress.unlocked||!progress.highest;
+  $('fight').textContent=`DESAFIAR · Nv. ${progress.next}`;$('repeat').textContent=`REPETIR · ${progress.highest?'Nv. '+progress.highest:'sin victorias'}`;
+  const next=getBoss(state,id),last=progress.highest?getBoss(state,id,progress.highest):null;
+  $('reward-preview').textContent=progress.unlocked?`Desafío: +${rewardFor(next,'progress').format()} oro y +1 nivel de reliquia · Repetición: ${last?'+'+rewardFor(last,'repeat').format()+' oro':'—'}, sin niveles ni XP`:'Requisitos: '+requirements(id);
+  $('boss-item').textContent=`Superado ${progress.highest} · ${boss.item} · ${state.items[id]?'Nv. '+state.items[id].level+' · '+itemDescription(state,id):'Se obtiene al vencer el nivel 1'}`;
+  for(const key of ['style','combat-style']){$(key).value=state.style;$(key).disabled=busy()||state.afk.active||blocked();}
+  $('style-description').textContent=C.styles[state.style].description;
+  $('character-stats').innerHTML=Object.entries(C.upgrades).map(([key,c])=>`<span>${c.name}<strong>${p[key].format()}</strong></span>`).join('');
+  renderUltimate();
+  if(!fight?.done||fight.won)$('combat-advice').hidden=true;
+  $('special-detail').hidden=!boss.special;
+  $('special-detail').textContent=boss.special?`Hito especial · ${C.milestones[id].description} · Oro ×${C.milestones[id].gold} solo en primera victoria.`:'';
+  $('unlock-detail').hidden=progress.unlocked;$('unlock-detail').textContent=requirements(id);
+  $('special-stats').innerHTML=`<span>Crítico <strong>${pct(p.criticalChance)}</strong></span><span>Daño crítico <strong>${pct(p.criticalDamage)}</strong></span><span>Penetración <strong>${pct(p.penetration)}</strong></span><span>Robo de vida <strong>${pct(p.vampirism)}</strong></span><p>Mejoras de oro: solo Ataque, Vida y Defensa. Las reliquias mejoran al superar nuevos niveles.</p>`;
+  renderBosses();renderUpgrades(base);renderInventory();renderAFK();renderSummary();
+  $('migration-notice').hidden=!state.migration&&!blocked();
+  $('migration-notice').textContent=readOnly?'Esta partida ya está abierta en otra pestaña. Cierra aquella y recarga aquí para jugar.':saveBlocked?'Partida en pausa: revisa Partida y copias de seguridad. El guardado original no se sobrescribe.':state.migration?'Partida antigua migrada. Oro, mejoras y poder conservados; victorias agrupadas por especialización. Copia original disponible en Partida.':'';
+  $('export-legacy').hidden=!state.migration&&!saveBlocked;
+  $('import').disabled=readOnly;
+}
+function renderUpgrades(p){
+  $('upgrade-list').innerHTML=Object.entries(C.upgrades).map(([key,c])=>`<article class="panel upgrade-card"><div class="upgrade-icon">${c.icon}</div><div><h2>${c.name} <small>NV. ${state.levels[key]}</small></h2><div class="upgrade-value">${p[key].format()}</div><small>+15% base por nivel</small></div><div class="upgrade-buttons">${[1,10,'max'].map(n=>{const count=n==='max'?maxBuy(state,key):n;return `<button data-buy="${key}" data-count="${n}" ${blocked()||!count||!state.gold.gte(cost(state,key,count))?'disabled':''}>${n==='max'?`Máx. (${count})`:`+${n}`}<br><small>${count?cost(state,key,count).format():'—'} oro</small></button>`;}).join('')}</div></article>`).join('');
+}
+function renderSummary(){
+  const f=fight;$('combat-summary').hidden=!f?.done;if(!f?.done)return;
+  const s=f.summary,percent=(b,r)=>{const n=armorPercentage(b,r);return n===null?'Sin ataques':n.toLocaleString('es-ES',{maximumFractionDigits:1})+'%';};
+  $('combat-summary').innerHTML=`<span>Daño infligido <b>${s.dealt.format()}</b></span><span>Daño recibido <b>${s.received.format()}</b></span><span>Turnos (acciones) <b>${f.turn}</b></span><span>Bloqueado por armadura enemiga <b>${percent(s.enemyBlocked,s.enemyRaw)}</b></span><span>Bloqueado por tu armadura <b>${percent(s.playerBlocked,s.playerRaw)}</b></span><span>Definitivas <b>${f.ultimate.activations}</b></span>`;
+}
+function renderInventory(){
+  $('inventory-list').innerHTML=BOSS_IDS.map(id=>{const c=C.bosses[id],i=state.items[id];return `<article class="panel item-card ${i?'':'unowned'}"><span class="rune">${c.rune}</span><div class="eyebrow">${c.label.toUpperCase()} · ${i?'NIVEL '+i.level:'SIN OBTENER'}</div><h3>${c.item}</h3><p class="bonus">${i?itemDescription(state,id):'Vence su primer nivel'}</p><p>${i?'Próxima mejora: vencer nivel '+state.bosses[id].next:'Una única reliquia permanente'}</p></article>`;}).join('');
+  $('legacy-stats').hidden=!state.migration;
+  $('legacy-stats').textContent=state.migration?'Legado de v1 conservado como multiplicador fijo adicional de Ataque, Vida y Defensa. No crea objetos nuevos ni crece al repetir.':'';
+}
+function renderAFK(){
+  const id=state.afk.active?state.afk.bossId:state.selectedBoss,p=state.bosses[id];
+  const autoMode=state.afk.active?state.afk.mode:$('afk-mode').value;
+  const b=getBoss(state,id,autoMode==='repeat'&&p.highest?p.highest:p.next);
+  $('afk-target').textContent=`${b.label} · nivel ${b.level} · +${rewardFor(b,autoMode,true).format()} oro / coste ${b.reward.mul(C.afk.feeRate).format()}`;
+  $('afk-mode').disabled=state.afk.active||busy()||blocked();
+  $('afk-toggle').textContent=!state.afk.unlocked?`Desbloquear · ${C.afk.unlock} oro`:state.afk.active?'Detener expedición':'Iniciar expedición';
+  $('afk-toggle').disabled=blocked()||(!state.afk.active&&(busy()||!p.unlocked||(!state.afk.unlocked&&state.gold.log<Math.log10(C.afk.unlock))));
+  $('afk-status').textContent=state.afk.active?`Activo · ${state.afk.mode==='repeat'?'repetición':'desafío'} · ${b.label} nivel ${b.level}`:state.afk.unlocked?'Preparado para descender.':'La expedición está bloqueada.';
+}
+function animate(id,cls){const el=$(id);el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);}
+function begin(automatic=false,requestedMode='progress'){
+  if(blocked()||busy())return;
+  cancelAdvice();
+  mode=automatic?state.afk.mode:requestedMode;
+  if(automatic)state.selectedBoss=state.afk.bossId;
+  fight=startCombat(state,state.selectedBoss,mode,automatic);
+  if(!fight){if(automatic)state.afk.active=false;toast('No se puede iniciar: revisa desbloqueo, victorias u oro.');persist();render();return;}
+  $('result').textContent=`${fight.boss.label} · nivel ${fight.boss.level} · ${mode==='repeat'?'repetición':'desafío'}`;
+  $('battle-log').textContent='';$('player-hit').textContent='PREPARADO';$('boss-hit').textContent='EN GUARDIA';
+  persist();render();if(!blocked())schedule();
+}
+function schedule(){clearTimeout(timer);timer=setTimeout(tick,650/state.speed);}
+function tick(){
+  if(!fight||fight.done||blocked())return;
+  const e=stepCombat(state,fight);if(!e)return;
+  const text=`${e.playerTurn?'Tú':'Boss'}: ${e.critical?'¡crítico! ':''}−${e.hit.format()}${e.healed.log>-Infinity?' · cura '+e.healed.format():''}`;
+  $(e.playerTurn?'boss-hit':'player-hit').textContent=`−${e.hit.format()}${e.critical?' CRÍTICO':''}`;
+  animate(e.playerTurn?'boss-fighter':'player-fighter','hit');fight.log.unshift(text);fight.log.length=Math.min(3,fight.log.length);$('battle-log').textContent=fight.log.join(' / ');
+  if(fight.done){
+    $('result').textContent=fight.won?`Victoria · +${fight.reward.format()} oro${fight.milestoneClaimed?' · Premio de hito cobrado':''}${fight.item?' · '+fight.boss.item+' sube a nivel '+fight.item.level:'. Repetición: sin mejora de reliquia.'}`:fight.timeout?'Combate agotado. Necesitas más poder para superar su resistencia.':'Derrota. Conservas tu progreso; mejora o repite un nivel superado.';
+    if(fight.won)animate('combat','won');
+    if(fight.unlocked?.length)toast('Guardián desbloqueado: '+fight.unlocked.map(id=>C.bosses[id].label).join(', '));
+    if(fight.automatic&&!fight.won)toast(state.afk.active?'AFK pasa a repetir este mismo guardián.':'AFK detenido: no hay repetición disponible o has perdido en repetición.');
+    persist();render();if(!fight.won)requestAdvice(fight);if(state.afk.active&&!blocked())timer=setTimeout(()=>begin(true),C.afk.delay);
+  }else{renderCombatOnly();renderUltimate();schedule();}
+}
+function renderCombatOnly(){const f=fight;$('player-hp').textContent=`${f.playerHP.format()} / ${f.player.health.format()}`;$('boss-hp').textContent=`${f.bossHP.format()} / ${f.boss.health.format()}`;$('player-bar').style.width=`${100*f.playerHP.ratio(f.player.health)}%`;$('boss-bar').style.width=`${100*f.bossHP.ratio(f.boss.health)}%`;}
+$('boss-roster').addEventListener('click',e=>{const b=e.target.closest('[data-boss]');if(!b||busy()||state.afk.active||blocked())return;state.selectedBoss=b.dataset.boss;fight=null;cancelAdvice();persist();render();});
+$('fight').addEventListener('click',()=>begin(false,'progress'));
+$('repeat').addEventListener('click',()=>begin(false,'repeat'));
+$('speed').addEventListener('change',()=>{state.speed=Number($('speed').value);persist();});
+for(const key of ['style','combat-style'])$(key).addEventListener('change',()=>{if(busy()||state.afk.active||blocked())return;state.style=$(key).value;fight=null;cancelAdvice();persist();render();});
+$('upgrade-list').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(!b||blocked())return;if(buy(state,b.dataset.buy,b.dataset.count==='max'?'max':Number(b.dataset.count))){persist();render();toast('Mejora permanente adquirida.');}});
+$('afk-mode').addEventListener('change',renderAFK);
+$('afk-toggle').addEventListener('click',()=>{
+  if(blocked())return;
+  if(!state.afk.unlocked){if(unlockAFK(state))toast('Expedición desbloqueada.');}
+  else if(state.afk.active){state.afk.active=false;if(!busy())clearTimeout(timer);}
+  else if(!busy()){state.afk.active=true;state.afk.bossId=state.selectedBoss;state.afk.mode=$('afk-mode').value;clearTimeout(timer);begin(true);}
+  persist();render();
+});
+function download(raw,name){const url=URL.createObjectURL(new Blob([raw],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+$('export').addEventListener('click',()=>download(JSON.stringify(state,null,2),'cavernaburx-v2.json'));
+$('export-legacy').addEventListener('click',()=>{const raw=state.migration?.source||localStorage.getItem(SAVE_KEY)||localStorage.getItem(LEGACY_KEY);if(raw)download(raw,'cavernaburx-original.json');});
+$('import').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file||readOnly)return;
+  try{
+    if(file.size>20*1024*1024)throw Error('El archivo supera 20 MB.');
+    const next=decode(await file.text());
+    if(!confirm('¿Reemplazar la partida por esta copia validada?'+(next.migration?' Se conservará el original v1.':'')))return;
+    // Retain the replaced local save before committing the import.
+    const previous=localStorage.getItem(SAVE_KEY);if(previous)localStorage.setItem('cavernaburx.before-import',previous);
+    clearTimeout(timer);next.pending=null;state=next;fight=null;saveBlocked=false;persist();render();toast('Partida importada.');
+    if(state.afk.active&&!blocked())timer=setTimeout(()=>begin(true),C.afk.delay);
+  }catch(error){toast('No se pudo importar: '+error.message);}finally{e.target.value='';}
+});
+// Fallback protection where Web Locks is unavailable: suspend stale tabs.
+window.addEventListener('storage',e=>{if(e.key===SAVE_KEY&&!readOnly){readOnly=true;clearTimeout(timer);render();}});
+window.addEventListener('pagehide',persist);
+render();if(!blocked()){persist();if(state.afk.active)timer=setTimeout(()=>begin(true),C.afk.delay);}
+const settingsLink=document.createElement('button');settingsLink.className='text-btn';settingsLink.textContent='Partida y copias ↗';settingsLink.addEventListener('click',()=>tab('settings'));document.querySelector('footer').append(settingsLink);
+
+return {};
+})();</script></body></html>
+
+
