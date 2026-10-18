@@ -3,3 +3,11 @@ desktop-check.png
 mobile-check.png
 character-check.png
 advice-check.png
+.env
+.env.local
+.env.*
+!.env.example
+dist/
+.tools/
+.npm-cache/
+accounts-check.png
